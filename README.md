@@ -10,7 +10,7 @@ while developing better software engineering habits.
 ## Progress
 
 - [x] Day 01 — Project setup
-- [ ] Day 02 — Django setup
+- [x] Day 02 — Django setup
 - [ ] Day 03 — Entry model
 - [ ] Day 04 — Database and migrations
 - [ ] Day 05 — Django admin
