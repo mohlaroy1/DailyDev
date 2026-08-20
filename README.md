@@ -1,6 +1,5 @@
 # DailyDev 🟩
 
-A personal developer dashboard that I am building one day at a time.
 
 ## Goal
 
