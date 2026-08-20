@@ -12,7 +12,7 @@ while developing better software engineering habits.
 - [x] Day 01 — Project setup
 - [x] Day 02 — Django setup
 - [x] Day 03 — Entry model
-- [ ] Day 04 — Database and migrations
+- [x] Day 04 — Database and migrations
 - [ ] Day 05 — Django admin
 - [ ] Day 06 — Create entries
 - [ ] Day 07 — Display entries

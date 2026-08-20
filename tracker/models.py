@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Technology(models.Model):
     name = models.CharField(max_length=100)
@@ -9,6 +10,8 @@ class Technology(models.Model):
 
 
 class CodingSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="coding_sessions",)
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     date = models.DateField()
