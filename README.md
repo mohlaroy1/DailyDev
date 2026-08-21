@@ -1,9 +1,6 @@
 # DailyDev 🟩
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 42c8781 (Added advanced admin configuration)
 ## Goal
 
 Build and improve this application every day for 30 days
