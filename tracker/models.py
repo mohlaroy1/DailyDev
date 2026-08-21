@@ -14,7 +14,7 @@ class CodingSession(models.Model):
 
     title = models.CharField(max_length=200)
     description = models.TextField()
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     duration_minutes = models.DurationField()
     technologies = models.ManyToManyField(Technology, related_name="sessions", blank=True,)
     github_commit = models.CharField(max_length=100, blank=True,)
