@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DailyDev</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>DailyDev 🟩</h1>
+        <p>Your coding journey, one session at a time.</p>
+    </header>
+
+    <main>
+
+        <h2>Recent Coding Sessions</h2>
+
+        {% if sessions %}
+
+            {% for session in sessions %}
+
+                <article>
+                    <h3>{{ session.title }}</h3>
+
+                    <p>
+                        {{ session.description }}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        {{ session.date }}
+                    </p>
+
+                    <p>
+                        <strong>Duration:</strong>
+                        {{ session.duration_minutes }} minutes
+                    </p>
+
+                    <p>
+                        <strong>Developer:</strong>
+                        {{ session.user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Technologies:</strong>
+
+                        {% for technology in session.technologies.all %}
+                            {{ technology.name }}
+                            {% if not forloop.last %} · {% endif %}
+                        {% empty %}
+                            No technologies added
+                        {% endfor %}
+                    </p>
+
+                </article>
+
+                <hr>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No coding sessions yet.</p>
+
+        {% endif %}
+
+    </main>
+
+</body>
+</html>
