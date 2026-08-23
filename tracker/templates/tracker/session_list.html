@@ -16,6 +16,12 @@
 
     <main>
 
+        <a href="{% url 'session_create' %}">
+            + Log a Coding Session
+        </a>
+
+        <br><br>
+
         <h2>Recent Coding Sessions</h2>
 
         {% if sessions %}
