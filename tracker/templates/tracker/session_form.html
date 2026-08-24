@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>New Coding Session | DailyDev</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>DailyDev 🟩</h1>
+
+        <p>Create a new coding session.</p>
+
+        <a href="{% url 'session_list' %}">
+            ← Back to sessions
+        </a>
+    </header>
+
+    <main>
+
+        <h2>Log Today's Work</h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit">
+                Save Coding Session
+            </button>
+
+        </form>
+
+    </main>
+
+</body>
+</html>

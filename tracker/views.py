@@ -27,7 +27,7 @@ def session_create(request):
         if form.is_valid():
             session = form.save(commit=False)
 
-            # Temporary solution until authentication is added
+            
             session.user = get_object_or_404(User, username="YOUR_USERNAME")
 
             session.save()
