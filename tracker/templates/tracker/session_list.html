@@ -29,7 +29,11 @@
             {% for session in sessions %}
 
                 <article>
-                    <h3>{{ session.title }}</h3>
+                    <h3>
+                        <a href="{% url 'session_detail' session.id %}">
+        {                   { session.title }}
+                        </a>
+                    </h3>
 
                     <p>
                         {{ session.description }}

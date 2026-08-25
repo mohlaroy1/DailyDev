@@ -44,3 +44,9 @@ def session_create(request):
         "tracker/session_form.html",
         {"form": form},
     )
+
+
+def session_detail(request, session_id):
+    session = get_object_or_404(CodingSession, id=session_id)
+    return render(request, "tracker/session_detail.html", {"session": session},)
+
