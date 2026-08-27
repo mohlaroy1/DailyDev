@@ -14,17 +14,25 @@
 
         <h1>DailyDev 🟩</h1>
 
-        <a href="{% url 'session_list' %}">
-            ← Back to all sessions
-        </a>
+        <p>
+            <a href="{% url 'session_list' %}">
+                ← Back to all sessions
+            </a>
+        </p>
 
     </header>
+
 
     <main>
 
         <article>
 
+            <!-- Session Title -->
+
             <h2>{{ session.title }}</h2>
+
+
+            <!-- Description -->
 
             <p>
                 {{ session.description }}
@@ -32,20 +40,26 @@
 
             <hr>
 
+
+            <!-- Session Information -->
+
             <p>
                 <strong>Date:</strong>
                 {{ session.date }}
             </p>
+
 
             <p>
                 <strong>Duration:</strong>
                 {{ session.duration_minutes }} minutes
             </p>
 
+
             <p>
                 <strong>Developer:</strong>
                 {{ session.user.username }}
             </p>
+
 
             <p>
                 <strong>Technologies:</strong>
@@ -66,6 +80,9 @@
 
             </p>
 
+
+            <!-- GitHub Commit -->
+
             {% if session.github_commit %}
 
                 <p>
@@ -74,6 +91,25 @@
                 </p>
 
             {% endif %}
+
+
+            <hr>
+
+
+            <!-- Actions -->
+
+            <p>
+                <a href="{% url 'session_edit' session.id %}">
+                    ✏️ Edit this session
+                </a>
+            </p>
+
+
+            <p>
+                <a href="{% url 'session_list' %}">
+                    ← Back to all sessions
+                </a>
+            </p>
 
         </article>
 

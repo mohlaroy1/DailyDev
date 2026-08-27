@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, get_object_or_404, redirect
 
 from .forms import CodingSessionForm
 from .models import CodingSession
@@ -49,4 +49,24 @@ def session_create(request):
 def session_detail(request, session_id):
     session = get_object_or_404(CodingSession, id=session_id)
     return render(request, "tracker/session_detail.html", {"session": session},)
+
+
+def session_edit(request, session_id):
+    session = get_object_or_404(CodingSession, id=session_id)
+
+    if request.method == "POST":
+        session.title = request.POST.get("title")
+        session.description = request.POST.get("description")
+        session.duration_minutes = request.POST.get("duration_minutes")
+
+        session.save()
+
+        return redirect("session_detail", session_id=session.id)
+
+    return render(
+        request,
+        "tracker/session_edit.html",
+        {"session": session}
+    )
+
 

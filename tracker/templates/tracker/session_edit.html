@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit {{ session.title }} | DailyDev</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>DailyDev 🟩</h1>
+
+        <a href="{% url 'session_detail' session.id %}">
+            ← Back to session
+        </a>
+    </header>
+
+    <main>
+
+        <h2>Edit Coding Session</h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <p>
+                <label for="title">
+                    <strong>Title:</strong>
+                </label>
+
+                <br>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="{{ session.title }}"
+                    required
+                >
+            </p>
+
+
+            <p>
+                <label for="description">
+                    <strong>Description:</strong>
+                </label>
+
+                <br>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="6"
+                    required
+                >{{ session.description }}</textarea>
+            </p>
+
+
+            <p>
+                <label for="duration_minutes">
+                    <strong>Duration:</strong>
+                </label>
+
+                <br>
+
+                <input
+                    type="number"
+                    id="duration_minutes"
+                    name="duration_minutes"
+                    value="{{ session.duration_minutes }}"
+                    required
+                >
+            </p>
+
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+        </form>
+
+    </main>
+
+</body>
+
+</html>
