@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Sum
 
 from .forms import CodingSessionForm
-from .models import CodingSession
+from .models import CodingSession, Technology
 
 
 def session_list(request):
@@ -70,3 +71,42 @@ def session_edit(request, session_id):
     )
 
 
+
+def session_delete(request, session_id):
+    session = get_object_or_404(CodingSession, id=session_id)
+
+    if request.method == "POST":
+        session.delete()
+        return redirect("session_list")
+
+    return render(
+        request,
+        "tracker/session_confirm_delete.html",
+        {"session": session}
+    )
+
+
+def dashboard(request):
+
+    total_sessions = CodingSession.objects.count()
+
+    total_minutes = CodingSession.objects.aggregate(
+        total=Sum("duration_minutes")
+    )["total"] or 0
+
+    total_technologies = Technology.objects.count()
+
+    latest_session = CodingSession.objects.order_by("-date").first()
+
+    context = {
+        "total_sessions": total_sessions,
+        "total_minutes": total_minutes,
+        "total_technologies": total_technologies,
+        "latest_session": latest_session,
+    }
+
+    return render(
+        request,
+        "tracker/dashboard.html",
+        context
+    )

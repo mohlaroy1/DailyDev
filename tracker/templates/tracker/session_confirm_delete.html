@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Delete {{ session.title }} | DailyDev</title>
+</head>
+
+<body>
+
+    <header>
+
+        <h1>DailyDev 🟩</h1>
+
+        <a href="{% url 'session_detail' session.id %}">
+            ← Cancel and go back
+        </a>
+
+    </header>
+
+
+    <main>
+
+        <h2>Delete Coding Session</h2>
+
+        <p>
+            Are you sure you want to delete:
+        </p>
+
+        <h3>
+            "{{ session.title }}"
+        </h3>
+
+        <p>
+            This action cannot be undone.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button type="submit">
+                🗑️ Yes, Delete Session
+            </button>
+
+        </form>
+
+
+        <br>
+
+
+        <a href="{% url 'session_detail' session.id %}">
+            Cancel
+        </a>
+
+    </main>
+
+</body>
+
+</html>

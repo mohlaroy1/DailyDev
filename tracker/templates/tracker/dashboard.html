@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard | DailyDev</title>
+
+</head>
+
+
+<body>
+
+    <header>
+
+        <h1>DailyDev 🟩</h1>
+
+        <p>
+            Your coding journey, one session at a time.
+        </p>
+
+        <p>
+
+            <a href="{% url 'session_list' %}">
+                📋 All Sessions
+            </a>
+
+            |
+
+            <a href="{% url 'session_create' %}">
+                ➕ Log a Session
+            </a>
+
+        </p>
+
+    </header>
+
+
+    <main>
+
+        <h2>📊 Your Dashboard</h2>
+
+
+        <section>
+
+            <h3>Total Coding Sessions</h3>
+
+            <p>
+                {{ total_sessions }}
+            </p>
+
+        </section>
+
+
+        <section>
+
+            <h3>Total Coding Time</h3>
+
+            <p>
+                {{ total_minutes }} minutes
+            </p>
+
+        </section>
+
+
+        <section>
+
+            <h3>Technologies Used</h3>
+
+            <p>
+                {{ total_technologies }}
+            </p>
+
+        </section>
+
+
+        <hr>
+
+
+        <section>
+
+            <h2>🔥 Latest Coding Session</h2>
+
+
+            {% if latest_session %}
+
+                <h3>
+                    {{ latest_session.title }}
+                </h3>
+
+
+                <p>
+                    {{ latest_session.description }}
+                </p>
+
+
+                <p>
+
+                    <strong>Date:</strong>
+
+                    {{ latest_session.date }}
+
+                </p>
+
+
+                <p>
+
+                    <strong>Duration:</strong>
+
+                    {{ latest_session.duration_minutes }} minutes
+
+                </p>
+
+
+                <p>
+
+                    <a
+                        href="{% url 'session_detail' latest_session.id %}"
+                    >
+                        View session →
+                    </a>
+
+                </p>
+
+
+            {% else %}
+
+                <p>
+                    You haven't logged any coding sessions yet.
+                </p>
+
+                <a href="{% url 'session_create' %}">
+                    Log your first session →
+                </a>
+
+            {% endif %}
+
+        </section>
+
+
+        <hr>
+
+
+        <p>
+
+            <a href="{% url 'session_list' %}">
+                ← Back to all sessions
+            </a>
+
+        </p>
+
+    </main>
+
+</body>
+
+</html>

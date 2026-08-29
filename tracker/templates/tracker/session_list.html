@@ -1,83 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>DailyDev</title>
 </head>
 
+
 <body>
 
     <header>
+
         <h1>DailyDev 🟩</h1>
-        <p>Your coding journey, one session at a time.</p>
+
+        <p>
+            Your coding journey, one session at a time.
+        </p>
+
+
+        <!-- Navigation -->
+
+        <p>
+
+            <a href="{% url 'dashboard' %}">
+                📊 View Dashboard
+            </a>
+
+            |
+
+            <a href="{% url 'session_create' %}">
+                + Log a Coding Session
+            </a>
+
+        </p>
+
     </header>
+
 
     <main>
 
-        <a href="{% url 'session_create' %}">
-            + Log a Coding Session
-        </a>
-
-        <br><br>
-
         <h2>Recent Coding Sessions</h2>
+
 
         {% if sessions %}
 
             {% for session in sessions %}
 
                 <article>
+
                     <h3>
+
                         <a href="{% url 'session_detail' session.id %}">
-        {                   { session.title }}
+                            {{ session.title }}
                         </a>
+
                     </h3>
+
 
                     <p>
                         {{ session.description }}
                     </p>
 
+
                     <p>
+
                         <strong>Date:</strong>
+
                         {{ session.date }}
+
                     </p>
 
+
                     <p>
+
                         <strong>Duration:</strong>
+
                         {{ session.duration_minutes }} minutes
+
                     </p>
 
+
                     <p>
+
                         <strong>Developer:</strong>
+
                         {{ session.user.username }}
+
                     </p>
 
+
                     <p>
+
                         <strong>Technologies:</strong>
 
+
                         {% for technology in session.technologies.all %}
+
                             {{ technology.name }}
-                            {% if not forloop.last %} · {% endif %}
+
+                            {% if not forloop.last %}
+                                ·
+                            {% endif %}
+
+
                         {% empty %}
+
                             No technologies added
+
+
                         {% endfor %}
+
+                    </p>
+
+
+                    <p>
+
+                        <a href="{% url 'session_detail' session.id %}">
+                            View details →
+                        </a>
+
                     </p>
 
                 </article>
 
+
                 <hr>
+
 
             {% endfor %}
 
+
         {% else %}
 
-            <p>No coding sessions yet.</p>
+            <p>
+                No coding sessions yet.
+            </p>
+
+            <p>
+
+                <a href="{% url 'session_create' %}">
+                    Log your first coding session →
+                </a>
+
+            </p>
+
 
         {% endif %}
 
     </main>
 
 </body>
+
 </html>

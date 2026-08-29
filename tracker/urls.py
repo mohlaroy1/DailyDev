@@ -3,7 +3,18 @@ from . import views
 
 
 urlpatterns = [
-    path("", views.session_list, name="session_list"),
+
+    path(
+        "",
+        views.session_list,
+        name="session_list"
+    ),
+
+    path(
+        "dashboard/",
+        views.dashboard,
+        name="dashboard"
+    ),
 
     path(
         "sessions/new/",
@@ -22,4 +33,11 @@ urlpatterns = [
         views.session_edit,
         name="session_edit"
     ),
+
+    path(
+        "sessions/<int:session_id>/delete/",
+        views.session_delete,
+        name="session_delete"
+    ),
+
 ]

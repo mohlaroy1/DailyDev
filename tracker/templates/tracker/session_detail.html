@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{{ session.title }} | DailyDev</title>
@@ -106,10 +107,11 @@
 
 
             <p>
-                <a href="{% url 'session_list' %}">
-                    ← Back to all sessions
+                <a href="{% url 'session_delete' session.id %}">
+                    🗑️ Delete this session
                 </a>
             </p>
+
 
         </article>
 
