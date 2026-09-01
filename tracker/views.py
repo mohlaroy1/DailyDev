@@ -1,12 +1,16 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Sum
+from django.db.models import Sum, Q
+from django.core.paginator import Paginator
 
 from .forms import CodingSessionForm
 from .models import CodingSession, Technology
 
 
 def session_list(request):
+
+    query = request.GET.get("q", "")
+
     sessions = (
         CodingSession.objects
         .select_related("user")
@@ -14,25 +18,41 @@ def session_list(request):
         .order_by("-date", "-created_at")
     )
 
+    if query:
+        sessions = sessions.filter(
+            Q(title__icontains=query)
+            | Q(description__icontains=query)
+            | Q(technologies__name__icontains=query)
+        ).distinct()
+
+    paginator = Paginator(sessions, 5)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "tracker/session_list.html",
-        {"sessions": sessions},
+        {
+            "sessions": page_obj,
+            "page_obj": page_obj,
+            "query": query,
+        },
     )
 
 
 def session_create(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
     if request.method == "POST":
         form = CodingSessionForm(request.POST)
 
         if form.is_valid():
             session = form.save(commit=False)
-
-            
-            session.user = get_object_or_404(User, username="YOUR_USERNAME")
-
+            session.user = request.user
             session.save()
-
             form.save_m2m()
 
             return redirect("session_list")
@@ -48,21 +68,40 @@ def session_create(request):
 
 
 def session_detail(request, session_id):
-    session = get_object_or_404(CodingSession, id=session_id)
-    return render(request, "tracker/session_detail.html", {"session": session},)
+
+    session = get_object_or_404(
+        CodingSession,
+        id=session_id
+    )
+
+    return render(
+        request,
+        "tracker/session_detail.html",
+        {"session": session},
+    )
 
 
 def session_edit(request, session_id):
-    session = get_object_or_404(CodingSession, id=session_id)
+
+    session = get_object_or_404(
+        CodingSession,
+        id=session_id
+    )
 
     if request.method == "POST":
+
         session.title = request.POST.get("title")
         session.description = request.POST.get("description")
-        session.duration_minutes = request.POST.get("duration_minutes")
+        session.duration_minutes = request.POST.get(
+            "duration_minutes"
+        )
 
         session.save()
 
-        return redirect("session_detail", session_id=session.id)
+        return redirect(
+            "session_detail",
+            session_id=session.id
+        )
 
     return render(
         request,
@@ -71,12 +110,17 @@ def session_edit(request, session_id):
     )
 
 
-
 def session_delete(request, session_id):
-    session = get_object_or_404(CodingSession, id=session_id)
+
+    session = get_object_or_404(
+        CodingSession,
+        id=session_id
+    )
 
     if request.method == "POST":
+
         session.delete()
+
         return redirect("session_list")
 
     return render(
@@ -96,7 +140,9 @@ def dashboard(request):
 
     total_technologies = Technology.objects.count()
 
-    latest_session = CodingSession.objects.order_by("-date").first()
+    latest_session = CodingSession.objects.order_by(
+        "-date"
+    ).first()
 
     context = {
         "total_sessions": total_sessions,

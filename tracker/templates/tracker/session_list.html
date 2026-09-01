@@ -3,12 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>DailyDev</title>
+    <title>DailyDev | Coding Sessions</title>
 </head>
-
 
 <body>
 
@@ -20,13 +18,9 @@
             Your coding journey, one session at a time.
         </p>
 
-
-        <!-- Navigation -->
-
-        <p>
-
+        <nav>
             <a href="{% url 'dashboard' %}">
-                📊 View Dashboard
+                📊 Dashboard
             </a>
 
             |
@@ -34,16 +28,61 @@
             <a href="{% url 'session_create' %}">
                 + Log a Coding Session
             </a>
-
-        </p>
+        </nav>
 
     </header>
 
 
     <main>
 
+        <hr>
+
         <h2>Recent Coding Sessions</h2>
 
+
+        <!-- Search -->
+
+        <form method="get">
+
+            <label for="search">
+                Search sessions:
+            </label>
+
+            <input
+                id="search"
+                type="text"
+                name="q"
+                placeholder="Search by title or description..."
+                value="{{ query }}"
+            >
+
+            <button type="submit">
+                🔍 Search
+            </button>
+
+        </form>
+
+
+        {% if query %}
+
+            <p>
+                Showing results for:
+                <strong>"{{ query }}"</strong>
+            </p>
+
+            <p>
+                <a href="{% url 'session_list' %}">
+                    ✕ Clear search
+                </a>
+            </p>
+
+        {% endif %}
+
+
+        <hr>
+
+
+        <!-- Session List -->
 
         {% if sessions %}
 
@@ -52,50 +91,42 @@
                 <article>
 
                     <h3>
-
                         <a href="{% url 'session_detail' session.id %}">
                             {{ session.title }}
                         </a>
-
                     </h3>
 
 
-                    <p>
-                        {{ session.description }}
-                    </p>
+                    {% if session.description %}
+
+                        <p>
+                            {{ session.description }}
+                        </p>
+
+                    {% endif %}
 
 
                     <p>
-
-                        <strong>Date:</strong>
-
+                        <strong>📅 Date:</strong>
                         {{ session.date }}
-
                     </p>
 
 
                     <p>
-
-                        <strong>Duration:</strong>
-
+                        <strong>⏱ Duration:</strong>
                         {{ session.duration_minutes }} minutes
-
                     </p>
 
 
                     <p>
-
-                        <strong>Developer:</strong>
-
+                        <strong>👨‍💻 Developer:</strong>
                         {{ session.user.username }}
-
                     </p>
 
 
                     <p>
 
-                        <strong>Technologies:</strong>
-
+                        <strong>🛠 Technologies:</strong>
 
                         {% for technology in session.technologies.all %}
 
@@ -105,11 +136,9 @@
                                 ·
                             {% endif %}
 
-
                         {% empty %}
 
-                            No technologies added
-
+                            No technologies added.
 
                         {% endfor %}
 
@@ -117,11 +146,9 @@
 
 
                     <p>
-
                         <a href="{% url 'session_detail' session.id %}">
-                            View details →
+                            View session →
                         </a>
-
                     </p>
 
                 </article>
@@ -129,28 +156,112 @@
 
                 <hr>
 
-
             {% endfor %}
 
 
         {% else %}
 
-            <p>
-                No coding sessions yet.
-            </p>
+            <!-- No Results -->
 
-            <p>
+            {% if query %}
 
-                <a href="{% url 'session_create' %}">
-                    Log your first coding session →
-                </a>
+                <h3>No sessions found 🔎</h3>
 
-            </p>
+                <p>
+                    Nothing matched
+                    <strong>"{{ query }}"</strong>.
+                </p>
 
+                <p>
+                    <a href="{% url 'session_list' %}">
+                        ← View all sessions
+                    </a>
+                </p>
+
+            {% else %}
+
+                <h3>No coding sessions yet.</h3>
+
+                <p>
+                    Start documenting your coding journey!
+                </p>
+
+                <p>
+                    <a href="{% url 'session_create' %}">
+                        + Log your first session
+                    </a>
+                </p>
+
+            {% endif %}
+
+        {% endif %}
+
+
+        <!-- Pagination -->
+
+        {% if page_obj.has_other_pages %}
+
+            <hr>
+
+            <nav aria-label="Session pagination">
+
+                {% if page_obj.has_previous %}
+
+                    <a href="?page=1{% if query %}&q={{ query }}{% endif %}">
+                        « First
+                    </a>
+
+                    &nbsp;
+
+                    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        ← Previous
+                    </a>
+
+                {% endif %}
+
+
+                &nbsp;
+
+
+                <strong>
+                    Page {{ page_obj.number }}
+                    of {{ page_obj.paginator.num_pages }}
+                </strong>
+
+
+                &nbsp;
+
+
+                {% if page_obj.has_next %}
+
+                    <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        Next →
+                    </a>
+
+                    &nbsp;
+
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}">
+                        Last »
+                    </a>
+
+                {% endif %}
+
+            </nav>
 
         {% endif %}
 
     </main>
+
+
+    <footer>
+
+        <hr>
+
+        <p>
+            DailyDev 🟩 — Keep coding. Keep building.
+        </p>
+
+    </footer>
 
 </body>
 
