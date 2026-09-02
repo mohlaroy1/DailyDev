@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Sum, Q
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 from .forms import CodingSessionForm
 from .models import CodingSession, Technology
@@ -41,7 +42,7 @@ def session_list(request):
         },
     )
 
-
+@login_required
 def session_create(request):
     if not request.user.is_authenticated:
         return redirect("login")
@@ -80,7 +81,7 @@ def session_detail(request, session_id):
         {"session": session},
     )
 
-
+@login_required
 def session_edit(request, session_id):
 
     session = get_object_or_404(
@@ -110,6 +111,7 @@ def session_edit(request, session_id):
     )
 
 
+@login_required
 def session_delete(request, session_id):
 
     session = get_object_or_404(
@@ -130,6 +132,7 @@ def session_delete(request, session_id):
     )
 
 
+@login_required
 def dashboard(request):
 
     total_sessions = CodingSession.objects.count()
