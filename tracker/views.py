@@ -42,18 +42,19 @@ def session_list(request):
         },
     )
 
+
 @login_required
 def session_create(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
-
     if request.method == "POST":
         form = CodingSessionForm(request.POST)
 
         if form.is_valid():
             session = form.save(commit=False)
+
             session.user = request.user
+
             session.save()
+
             form.save_m2m()
 
             return redirect("session_list")
