@@ -8,6 +8,7 @@ from .forms import CodingSessionForm
 from .models import CodingSession, Technology
 
 
+@login_required
 def session_list(request):
 
     query = request.GET.get("q", "")
@@ -16,6 +17,7 @@ def session_list(request):
         CodingSession.objects
         .select_related("user")
         .prefetch_related("technologies")
+        .filter(user=request.user)
         .order_by("-date", "-created_at")
     )
 
@@ -69,11 +71,12 @@ def session_create(request):
     )
 
 
+@login_required
 def session_detail(request, session_id):
-
     session = get_object_or_404(
         CodingSession,
-        id=session_id
+        id=session_id,
+        user=request.user,
     )
 
     return render(
@@ -82,71 +85,66 @@ def session_detail(request, session_id):
         {"session": session},
     )
 
+
 @login_required
 def session_edit(request, session_id):
-
     session = get_object_or_404(
         CodingSession,
-        id=session_id
+        id=session_id,
+        user=request.user,
     )
 
     if request.method == "POST":
-
         session.title = request.POST.get("title")
         session.description = request.POST.get("description")
-        session.duration_minutes = request.POST.get(
-            "duration_minutes"
-        )
+        session.duration_minutes = request.POST.get("duration_minutes")
 
         session.save()
 
         return redirect(
             "session_detail",
-            session_id=session.id
+            session_id=session.id,
         )
 
     return render(
         request,
         "tracker/session_edit.html",
-        {"session": session}
+        {"session": session},
     )
 
 
 @login_required
 def session_delete(request, session_id):
-
     session = get_object_or_404(
         CodingSession,
-        id=session_id
+        id=session_id,
+        user=request.user,
     )
 
     if request.method == "POST":
-
         session.delete()
-
         return redirect("session_list")
 
     return render(
         request,
         "tracker/session_confirm_delete.html",
-        {"session": session}
+        {"session": session},
     )
 
 
 @login_required
 def dashboard(request):
+    user_sessions = CodingSession.objects.filter(user=request.user)
 
-    total_sessions = CodingSession.objects.count()
+    total_sessions = user_sessions.count()
 
-    total_minutes = CodingSession.objects.aggregate(
+    total_minutes = user_sessions.aggregate(
         total=Sum("duration_minutes")
     )["total"] or 0
 
     total_technologies = Technology.objects.count()
 
-    latest_session = CodingSession.objects.order_by(
-        "-date"
-    ).first()
+    latest_session = user_sessions.order_by("-date").first()
 
     context = {
         "total_sessions": total_sessions,
@@ -158,5 +156,5 @@ def dashboard(request):
     return render(
         request,
         "tracker/dashboard.html",
-        context
+        context,
     )
