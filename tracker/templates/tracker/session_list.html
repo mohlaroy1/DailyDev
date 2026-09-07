@@ -52,7 +52,7 @@
                 id="search"
                 type="text"
                 name="q"
-                placeholder="Search by title or description..."
+                placeholder="Search by title, description, or technology..."
                 value="{{ query }}"
             >
 
@@ -62,6 +62,8 @@
 
         </form>
 
+
+        <!-- Search Information -->
 
         {% if query %}
 
@@ -115,12 +117,6 @@
                     <p>
                         <strong>⏱ Duration:</strong>
                         {{ session.duration_minutes }} minutes
-                    </p>
-
-
-                    <p>
-                        <strong>👨‍💻 Developer:</strong>
-                        {{ session.user.username }}
                     </p>
 
 
