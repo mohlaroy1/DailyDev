@@ -2,18 +2,11 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Dashboard | DailyDev</title>
-
+    <title>DailyDev | Dashboard</title>
 </head>
-
 
 <body>
 
@@ -25,56 +18,59 @@
             Your coding journey, one session at a time.
         </p>
 
-        <p>
+        <nav>
 
             <a href="{% url 'session_list' %}">
-                📋 All Sessions
+                💻 Coding Sessions
             </a>
 
             |
 
             <a href="{% url 'session_create' %}">
-                ➕ Log a Session
+                + Log a Coding Session
             </a>
 
-        </p>
+        </nav>
 
     </header>
 
 
     <main>
 
-        <h2>📊 Your Dashboard</h2>
+        <hr>
 
+        <h2>📊 Dashboard</h2>
+
+        <p>
+            Welcome back,
+            <strong>{{ request.user.username }}</strong>!
+        </p>
+
+
+        <!-- Overall Statistics -->
 
         <section>
 
-            <h3>Total Coding Sessions</h3>
+            <h3>📈 Your Statistics</h3>
 
             <p>
+                <strong>💻 Total Sessions:</strong>
                 {{ total_sessions }}
             </p>
 
-        </section>
-
-
-        <section>
-
-            <h3>Total Coding Time</h3>
-
             <p>
+                <strong>⏱ Total Coding Time:</strong>
                 {{ total_minutes }} minutes
             </p>
 
-        </section>
-
-
-        <section>
-
-            <h3>Technologies Used</h3>
+            <p>
+                <strong>🛠 Technologies Used:</strong>
+                {{ total_technologies }}
+            </p>
 
             <p>
-                {{ total_technologies }}
+                <strong>🔥 Current Streak:</strong>
+                {{ streak }} day{{ streak|pluralize }}
             </p>
 
         </section>
@@ -83,61 +79,53 @@
         <hr>
 
 
+        <!-- This Week -->
+
         <section>
 
-            <h2>🔥 Latest Coding Session</h2>
+            <h3>📅 This Week</h3>
+
+            <p>
+                <strong>Sessions:</strong>
+                {{ sessions_this_week }}
+            </p>
+
+            <p>
+                <strong>Coding Time:</strong>
+                {{ minutes_this_week }} minutes
+            </p>
+
+        </section>
 
 
-            {% if latest_session %}
-
-                <h3>
-                    {{ latest_session.title }}
-                </h3>
+        <hr>
 
 
-                <p>
-                    {{ latest_session.description }}
-                </p>
+        <!-- Most Used Technology -->
 
+        <section>
 
-                <p>
+            <h3>🏆 Most-Used Technology</h3>
 
-                    <strong>Date:</strong>
-
-                    {{ latest_session.date }}
-
-                </p>
-
-
-                <p>
-
-                    <strong>Duration:</strong>
-
-                    {{ latest_session.duration_minutes }} minutes
-
-                </p>
-
+            {% if most_used_technology %}
 
                 <p>
-
-                    <a
-                        href="{% url 'session_detail' latest_session.id %}"
-                    >
-                        View session →
-                    </a>
-
+                    <strong>
+                        {{ most_used_technology.technologies__name }}
+                    </strong>
                 </p>
 
+                <p>
+                    Used in
+                    {{ most_used_technology.session_count }}
+                    session{{ most_used_technology.session_count|pluralize }}.
+                </p>
 
             {% else %}
 
                 <p>
-                    You haven't logged any coding sessions yet.
+                    No technologies used yet.
                 </p>
-
-                <a href="{% url 'session_create' %}">
-                    Log your first session →
-                </a>
 
             {% endif %}
 
@@ -147,15 +135,117 @@
         <hr>
 
 
-        <p>
+        <!-- Last 7 Days -->
 
-            <a href="{% url 'session_list' %}">
-                ← Back to all sessions
-            </a>
+        <section>
 
-        </p>
+            <h3>📈 Last 7 Days</h3>
+
+            {% if daily_activity %}
+
+                <table border="1" cellpadding="8">
+
+                    <thead>
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Sessions</th>
+                            <th>Coding Time</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for day in daily_activity %}
+
+                            <tr>
+
+                                <td>
+                                    {{ day.date }}
+                                </td>
+
+                                <td>
+                                    {{ day.sessions }}
+                                </td>
+
+                                <td>
+                                    {{ day.minutes }} minutes
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% endif %}
+
+        </section>
+
+
+        <hr>
+
+
+        <!-- Latest Session -->
+
+        <section>
+
+            <h3>🕐 Latest Coding Session</h3>
+
+            {% if latest_session %}
+
+                <h4>
+                    <a href="{% url 'session_detail' latest_session.id %}">
+                        {{ latest_session.title }}
+                    </a>
+                </h4>
+
+                <p>
+                    📅 {{ latest_session.date }}
+                </p>
+
+                <p>
+                    ⏱ {{ latest_session.duration_minutes }} minutes
+                </p>
+
+                <p>
+                    <a href="{% url 'session_detail' latest_session.id %}">
+                        View session →
+                    </a>
+                </p>
+
+            {% else %}
+
+                <p>
+                    You haven't logged any coding sessions yet.
+                </p>
+
+                <p>
+                    <a href="{% url 'session_create' %}">
+                        + Log your first session
+                    </a>
+                </p>
+
+            {% endif %}
+
+        </section>
 
     </main>
+
+
+    <footer>
+
+        <hr>
+
+        <p>
+            DailyDev 🟩 — Keep coding. Keep building.
+        </p>
+
+    </footer>
 
 </body>
 
