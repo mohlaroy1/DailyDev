@@ -2,250 +2,906 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>DailyDev | Dashboard</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Helvetica, Arial, sans-serif;
+
+            background: #f5f7fb;
+
+            color: #1f2937;
+
+            line-height: 1.6;
+        }
+
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+
+        header {
+            background: white;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            padding: 18px 6%;
+        }
+
+
+        .navbar {
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .logo {
+            font-size: 24px;
+
+            font-weight: 700;
+        }
+
+
+        .nav-links {
+            display: flex;
+
+            gap: 20px;
+
+            align-items: center;
+        }
+
+
+        .nav-links a {
+            color: #4b5563;
+
+            font-weight: 500;
+
+            transition: 0.2s;
+        }
+
+
+        .nav-links a:hover {
+            color: #111827;
+        }
+
+
+        .new-session {
+            background: #111827;
+
+            color: white !important;
+
+            padding: 9px 15px;
+
+            border-radius: 8px;
+        }
+
+
+        .new-session:hover {
+            background: #374151;
+
+            color: white !important;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        main {
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 50px 6%;
+        }
+
+
+        .welcome {
+            margin-bottom: 35px;
+        }
+
+
+        .welcome h1 {
+            font-size: 34px;
+
+            margin-bottom: 8px;
+
+            color: #111827;
+        }
+
+
+        .welcome p {
+            color: #6b7280;
+
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           STAT CARDS
+        ========================= */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 35px;
+        }
+
+
+        .stat-card {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 24px;
+
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+        }
+
+
+        .stat-icon {
+            font-size: 25px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .stat-label {
+            color: #6b7280;
+
+            font-size: 14px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .stat-value {
+            font-size: 28px;
+
+            font-weight: 700;
+
+            color: #111827;
+        }
+
+
+        /* =========================
+           CONTENT GRID
+        ========================= */
+
+        .content-grid {
+            display: grid;
+
+            grid-template-columns: 2fr 1fr;
+
+            gap: 20px;
+        }
+
+
+        .card {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .card h2 {
+            font-size: 20px;
+
+            margin-bottom: 20px;
+
+            color: #111827;
+        }
+
+
+        /* =========================
+           WEEKLY STATS
+        ========================= */
+
+        .weekly-stats {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+
+        .weekly-item {
+            background: #f9fafb;
+
+            border-radius: 10px;
+
+            padding: 18px;
+        }
+
+
+        .weekly-item p:first-child {
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        .weekly-number {
+            font-size: 24px;
+
+            font-weight: 700;
+
+            margin-top: 5px;
+        }
+
+
+        /* =========================
+           STREAK
+        ========================= */
+
+        .streak-card {
+            text-align: center;
+        }
+
+
+        .streak-number {
+            font-size: 48px;
+
+            font-weight: 800;
+
+            margin: 10px 0;
+
+            color: #111827;
+        }
+
+
+        .streak-text {
+            color: #6b7280;
+        }
+
+
+        /* =========================
+           TECHNOLOGY
+        ========================= */
+
+        .technology-name {
+            font-size: 25px;
+
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+
+        .technology-count {
+            color: #6b7280;
+        }
+
+
+        /* =========================
+           ACTIVITY TABLE
+        ========================= */
+
+        .activity-table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+
+        .activity-table th,
+        .activity-table td {
+            text-align: left;
+
+            padding: 13px 10px;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        .activity-table th {
+            color: #6b7280;
+
+            font-size: 13px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .activity-table tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        /* =========================
+           LATEST SESSION
+        ========================= */
+
+        .latest-title {
+            font-size: 20px;
+
+            font-weight: 700;
+
+            margin-bottom: 10px;
+        }
+
+
+        .latest-title a:hover {
+            text-decoration: underline;
+        }
+
+
+        .latest-info {
+            color: #6b7280;
+
+            margin-bottom: 15px;
+        }
+
+
+        .view-button {
+            display: inline-block;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 9px 15px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+
+        .view-button:hover {
+            background: #374151;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+
+            padding: 30px;
+
+            color: #9ca3af;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+
+            .nav-links {
+                flex-wrap: wrap;
+            }
+
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .weekly-stats {
+                grid-template-columns: 1fr;
+            }
+
+
+            .welcome h1 {
+                font-size: 28px;
+            }
+
+
+            main {
+                padding: 35px 5%;
+            }
+
+
+            .activity-table {
+                font-size: 14px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
     <header>
 
-        <h1>DailyDev 🟩</h1>
+        <nav class="navbar">
 
-        <p>
-            Your coding journey, one session at a time.
-        </p>
-
-        <nav>
-
-            <a href="{% url 'session_list' %}">
-                💻 Coding Sessions
+            <a
+                href="{% url 'dashboard' %}"
+                class="logo"
+            >
+                DailyDev 🟩
             </a>
 
-            |
 
-            <a href="{% url 'session_create' %}">
-                + Log a Coding Session
-            </a>
+            <div class="nav-links">
+
+                <a href="{% url 'session_list' %}">
+                    💻 Sessions
+                </a>
+
+
+                <a
+                    href="{% url 'session_create' %}"
+                    class="new-session"
+                >
+                    + New Session
+                </a>
+
+            </div>
 
         </nav>
 
     </header>
 
 
+    <!-- =========================
+         MAIN CONTENT
+    ========================= -->
+
     <main>
 
-        <hr>
 
-        <h2>📊 Dashboard</h2>
+        <!-- Welcome -->
 
-        <p>
-            Welcome back,
-            <strong>{{ request.user.username }}</strong>!
-        </p>
+        <section class="welcome">
 
-
-        <!-- Overall Statistics -->
-
-        <section>
-
-            <h3>📈 Your Statistics</h3>
+            <h1>
+                Welcome back, {{ request.user.username }} 👋
+            </h1>
 
             <p>
-                <strong>💻 Total Sessions:</strong>
-                {{ total_sessions }}
-            </p>
-
-            <p>
-                <strong>⏱ Total Coding Time:</strong>
-                {{ total_minutes }} minutes
-            </p>
-
-            <p>
-                <strong>🛠 Technologies Used:</strong>
-                {{ total_technologies }}
-            </p>
-
-            <p>
-                <strong>🔥 Current Streak:</strong>
-                {{ streak }} day{{ streak|pluralize }}
+                Here's an overview of your coding progress.
             </p>
 
         </section>
 
 
-        <hr>
+        <!-- =========================
+             STAT CARDS
+        ========================= -->
+
+        <section class="stats-grid">
 
 
-        <!-- This Week -->
+            <div class="stat-card">
 
-        <section>
+                <div class="stat-icon">
+                    💻
+                </div>
 
-            <h3>📅 This Week</h3>
+                <div class="stat-label">
+                    Total Sessions
+                </div>
 
-            <p>
-                <strong>Sessions:</strong>
-                {{ sessions_this_week }}
-            </p>
+                <div class="stat-value">
+                    {{ total_sessions }}
+                </div>
 
-            <p>
-                <strong>Coding Time:</strong>
-                {{ minutes_this_week }} minutes
-            </p>
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏱️
+                </div>
+
+                <div class="stat-label">
+                    Total Coding Time
+                </div>
+
+                <div class="stat-value">
+                    {{ total_minutes }}
+                </div>
+
+                <div class="stat-label">
+                    minutes
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🛠️
+                </div>
+
+                <div class="stat-label">
+                    Technologies
+                </div>
+
+                <div class="stat-value">
+                    {{ total_technologies }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🔥
+                </div>
+
+                <div class="stat-label">
+                    Coding Streak
+                </div>
+
+                <div class="stat-value">
+                    {{ streak }}
+                </div>
+
+                <div class="stat-label">
+                    day{{ streak|pluralize }}
+                </div>
+
+            </div>
+
 
         </section>
 
 
-        <hr>
+        <!-- =========================
+             CONTENT
+        ========================= -->
+
+        <div class="content-grid">
 
 
-        <!-- Most Used Technology -->
+            <!-- LEFT COLUMN -->
 
-        <section>
-
-            <h3>🏆 Most-Used Technology</h3>
-
-            {% if most_used_technology %}
-
-                <p>
-                    <strong>
-                        {{ most_used_technology.technologies__name }}
-                    </strong>
-                </p>
-
-                <p>
-                    Used in
-                    {{ most_used_technology.session_count }}
-                    session{{ most_used_technology.session_count|pluralize }}.
-                </p>
-
-            {% else %}
-
-                <p>
-                    No technologies used yet.
-                </p>
-
-            {% endif %}
-
-        </section>
+            <div>
 
 
-        <hr>
+                <!-- Weekly Statistics -->
+
+                <section class="card">
+
+                    <h2>
+                        📅 This Week
+                    </h2>
 
 
-        <!-- Last 7 Days -->
-
-        <section>
-
-            <h3>📈 Last 7 Days</h3>
-
-            {% if daily_activity %}
-
-                <table border="1" cellpadding="8">
-
-                    <thead>
-
-                        <tr>
-                            <th>Date</th>
-                            <th>Sessions</th>
-                            <th>Coding Time</th>
-                        </tr>
-
-                    </thead>
+                    <div class="weekly-stats">
 
 
-                    <tbody>
+                        <div class="weekly-item">
 
-                        {% for day in daily_activity %}
+                            <p>
+                                Coding Sessions
+                            </p>
+
+                            <div class="weekly-number">
+                                {{ sessions_this_week }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="weekly-item">
+
+                            <p>
+                                Coding Time
+                            </p>
+
+                            <div class="weekly-number">
+                                {{ minutes_this_week }}
+                                <span style="font-size: 14px;">
+                                    min
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+                <!-- Last 7 Days -->
+
+                <section class="card">
+
+                    <h2>
+                        📈 Last 7 Days
+                    </h2>
+
+
+                    <table class="activity-table">
+
+                        <thead>
 
                             <tr>
 
-                                <td>
-                                    {{ day.date }}
-                                </td>
+                                <th>
+                                    Date
+                                </th>
 
-                                <td>
-                                    {{ day.sessions }}
-                                </td>
+                                <th>
+                                    Sessions
+                                </th>
 
-                                <td>
-                                    {{ day.minutes }} minutes
-                                </td>
+                                <th>
+                                    Time
+                                </th>
 
                             </tr>
 
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            {% endif %}
-
-        </section>
+                        </thead>
 
 
-        <hr>
+                        <tbody>
+
+                            {% for day in daily_activity %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ day.date }}
+                                    </td>
+
+                                    <td>
+                                        {{ day.sessions }}
+                                    </td>
+
+                                    <td>
+                                        {{ day.minutes }} min
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </section>
 
 
-        <!-- Latest Session -->
+            </div>
 
-        <section>
 
-            <h3>🕐 Latest Coding Session</h3>
+            <!-- RIGHT COLUMN -->
 
-            {% if latest_session %}
+            <div>
 
-                <h4>
-                    <a href="{% url 'session_detail' latest_session.id %}">
-                        {{ latest_session.title }}
-                    </a>
-                </h4>
 
-                <p>
-                    📅 {{ latest_session.date }}
-                </p>
+                <!-- Streak -->
 
-                <p>
-                    ⏱ {{ latest_session.duration_minutes }} minutes
-                </p>
+                <section class="card streak-card">
 
-                <p>
-                    <a href="{% url 'session_detail' latest_session.id %}">
-                        View session →
-                    </a>
-                </p>
+                    <h2>
+                        🔥 Coding Streak
+                    </h2>
 
-            {% else %}
 
-                <p>
-                    You haven't logged any coding sessions yet.
-                </p>
+                    <div class="streak-number">
+                        {{ streak }}
+                    </div>
 
-                <p>
-                    <a href="{% url 'session_create' %}">
-                        + Log your first session
-                    </a>
-                </p>
 
-            {% endif %}
+                    <p class="streak-text">
 
-        </section>
+                        day{{ streak|pluralize }}
+                        in a row
+
+                    </p>
+
+                </section>
+
+
+                <!-- Most Used Technology -->
+
+                <section class="card">
+
+                    <h2>
+                        🏆 Top Technology
+                    </h2>
+
+
+                    {% if most_used_technology %}
+
+                        <div class="technology-name">
+
+                            {{ most_used_technology.technologies__name }}
+
+                        </div>
+
+
+                        <p class="technology-count">
+
+                            Used in
+                            {{ most_used_technology.session_count }}
+                            session{{ most_used_technology.session_count|pluralize }}
+
+                        </p>
+
+                    {% else %}
+
+                        <p>
+                            No technologies yet.
+                        </p>
+
+                    {% endif %}
+
+                </section>
+
+
+                <!-- Latest Session -->
+
+                <section class="card">
+
+                    <h2>
+                        🕐 Latest Session
+                    </h2>
+
+
+                    {% if latest_session %}
+
+                        <div class="latest-title">
+
+                            <a
+                                href="{% url 'session_detail' latest_session.id %}"
+                            >
+                                {{ latest_session.title }}
+                            </a>
+
+                        </div>
+
+
+                        <p class="latest-info">
+
+                            📅 {{ latest_session.date }}
+
+                            <br>
+
+                            ⏱ {{ latest_session.duration_minutes }} minutes
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'session_detail' latest_session.id %}"
+                            class="view-button"
+                        >
+                            View Session →
+                        </a>
+
+                    {% else %}
+
+                        <p>
+                            No coding sessions yet.
+                        </p>
+
+
+                        <br>
+
+
+                        <a
+                            href="{% url 'session_create' %}"
+                            class="view-button"
+                        >
+                            + Create Session
+                        </a>
+
+                    {% endif %}
+
+                </section>
+
+
+            </div>
+
+
+        </div>
 
     </main>
 
 
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
     <footer>
 
-        <hr>
-
-        <p>
-            DailyDev 🟩 — Keep coding. Keep building.
-        </p>
+        DailyDev 🟩 — Keep coding. Keep building.
 
     </footer>
+
 
 </body>
 
