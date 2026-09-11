@@ -1,0 +1,104 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            DailyDev
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+    <header class="site-header">
+
+        <div class="container navbar">
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="logo"
+            >
+                DailyDev 🟩
+            </a>
+
+
+            {% if user.is_authenticated %}
+
+                <nav class="nav-links">
+
+                    <a href="{% url 'dashboard' %}">
+                        Dashboard
+                    </a>
+
+                    <a href="{% url 'session_list' %}">
+                        Sessions
+                    </a>
+
+                    <a href="{% url 'session_create' %}">
+                        + New Session
+                    </a>
+
+                    <form
+                        method="post"
+                        action="{% url 'logout' %}"
+                        class="logout-form"
+                    >
+
+                        {% csrf_token %}
+
+                        <button type="submit">
+                            Logout
+                        </button>
+
+                    </form>
+
+                </nav>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+
+    <main class="container page-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <footer class="site-footer">
+
+        <div class="container">
+
+            <p>
+                DailyDev 🟩 — Keep coding. Keep building.
+            </p>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
