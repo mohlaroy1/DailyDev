@@ -1,37 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}DailyDev | Edit {{ session.title }}{% endblock %}
 
-    <title>Edit {{ session.title }} | DailyDev</title>
-</head>
+{% block content %}
 
-<body>
+<style>
+    .form-page {
+        max-width: 760px;
+        margin: 0 auto;
+    }
 
-    <header>
-        <h1>DailyDev 🟩</h1>
+    .form-header {
+        margin-bottom: 28px;
+    }
 
-        <a href="{% url 'session_detail' session.id %}">
-            ← Back to session
-        </a>
-    </header>
+    .back-link {
+        display: inline-block;
+        margin-bottom: 18px;
+        color: #555;
+        text-decoration: none;
+        font-size: 14px;
+    }
 
-    <main>
+    .back-link:hover {
+        color: #111;
+    }
 
-        <h2>Edit Coding Session</h2>
+    .form-header h1 {
+        margin-bottom: 8px;
+    }
+
+    .form-header p {
+        color: #666;
+        margin: 0;
+    }
+
+    .form-card {
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 15px;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .form-group textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #222;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 28px;
+    }
+
+    .save-button {
+        background: #111;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .save-button:hover {
+        opacity: 0.85;
+    }
+
+    .cancel-button {
+        color: #555;
+        text-decoration: none;
+        padding: 12px 16px;
+    }
+
+    .cancel-button:hover {
+        color: #111;
+    }
+
+    @media (max-width: 600px) {
+        .form-card {
+            padding: 22px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .save-button,
+        .cancel-button {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="form-page">
+
+    <a href="{% url 'session_detail' session.id %}" class="back-link">
+        ← Back to session
+    </a>
+
+    <div class="form-header">
+        <h1>Edit Coding Session</h1>
+        <p>Update the details of your coding session.</p>
+    </div>
+
+    <div class="form-card">
 
         <form method="POST">
 
             {% csrf_token %}
 
-            <p>
+            <div class="form-group">
                 <label for="title">
-                    <strong>Title:</strong>
+                    Title
                 </label>
-
-                <br>
 
                 <input
                     type="text"
@@ -40,50 +152,54 @@
                     value="{{ session.title }}"
                     required
                 >
-            </p>
+            </div>
 
-
-            <p>
+            <div class="form-group">
                 <label for="description">
-                    <strong>Description:</strong>
+                    Description
                 </label>
-
-                <br>
 
                 <textarea
                     id="description"
                     name="description"
-                    rows="6"
                     required
                 >{{ session.description }}</textarea>
-            </p>
+            </div>
 
-
-            <p>
+            <div class="form-group">
                 <label for="duration_minutes">
-                    <strong>Duration:</strong>
+                    Duration (minutes)
                 </label>
-
-                <br>
 
                 <input
                     type="number"
                     id="duration_minutes"
                     name="duration_minutes"
                     value="{{ session.duration_minutes }}"
+                    min="1"
                     required
                 >
-            </p>
+            </div>
 
+            <div class="form-actions">
 
-            <button type="submit">
-                Save Changes
-            </button>
+                <button type="submit" class="save-button">
+                    Save Changes
+                </button>
+
+                <a
+                    href="{% url 'session_detail' session.id %}"
+                    class="cancel-button"
+                >
+                    Cancel
+                </a>
+
+            </div>
 
         </form>
 
-    </main>
+    </div>
 
-</body>
+</div>
 
-</html>
+{% endblock %}

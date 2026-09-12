@@ -1,52 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>DailyDev | Coding Sessions</title>
-</head>
+{% block title %}
+    DailyDev | Coding Sessions
+{% endblock %}
 
-<body>
 
-    <header>
+{% block content %}
 
-        <h1>DailyDev 🟩</h1>
+
+<!-- =========================
+     Page Header
+========================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            Recent Coding Sessions
+        </h1>
 
         <p>
             Your coding journey, one session at a time.
         </p>
 
-        <nav>
-            <a href="{% url 'dashboard' %}">
-                📊 Dashboard
-            </a>
-
-            |
-
-            <a href="{% url 'session_create' %}">
-                + Log a Coding Session
-            </a>
-        </nav>
-
-    </header>
+    </div>
 
 
-    <main>
+    <a
+        href="{% url 'session_create' %}"
+        class="primary-button"
+    >
+        + Log a Coding Session
+    </a>
 
-        <hr>
-
-        <h2>Recent Coding Sessions</h2>
+</div>
 
 
-        <!-- Search -->
 
-        <form method="get">
+<!-- =========================
+     Search
+========================= -->
 
-            <label for="search">
-                Search sessions:
-            </label>
+<section class="search-card">
+
+    <form method="get">
+
+        <label for="search">
+            Search your sessions
+        </label>
+
+
+        <div class="search-row">
 
             <input
                 id="search"
@@ -60,205 +66,680 @@
                 🔍 Search
             </button>
 
-        </form>
+        </div>
+
+    </form>
 
 
-        <!-- Search Information -->
+    {% if query %}
 
-        {% if query %}
+        <div class="search-info">
 
             <p>
                 Showing results for:
                 <strong>"{{ query }}"</strong>
             </p>
 
-            <p>
-                <a href="{% url 'session_list' %}">
-                    ✕ Clear search
-                </a>
-            </p>
 
-        {% endif %}
+            <a href="{% url 'session_list' %}">
+                ✕ Clear search
+            </a>
 
+        </div>
 
-        <hr>
+    {% endif %}
 
-
-        <!-- Session List -->
-
-        {% if sessions %}
-
-            {% for session in sessions %}
-
-                <article>
-
-                    <h3>
-                        <a href="{% url 'session_detail' session.id %}">
-                            {{ session.title }}
-                        </a>
-                    </h3>
+</section>
 
 
-                    {% if session.description %}
 
-                        <p>
-                            {{ session.description }}
+<!-- =========================
+     Sessions
+========================= -->
+
+{% if sessions %}
+
+
+    <div class="sessions-list">
+
+
+        {% for session in sessions %}
+
+
+            <article class="session-card">
+
+
+                <div class="session-card-header">
+
+                    <div>
+
+                        <h2>
+
+                            <a
+                                href="{% url 'session_detail' session.id %}"
+                            >
+                                {{ session.title }}
+                            </a>
+
+                        </h2>
+
+
+                        <p class="session-date">
+                            📅 {{ session.date }}
                         </p>
 
-                    {% endif %}
+                    </div>
 
 
-                    <p>
-                        <strong>📅 Date:</strong>
-                        {{ session.date }}
+                    <div class="duration">
+
+                        ⏱
+                        {{ session.duration_minutes }}
+                        min
+
+                    </div>
+
+                </div>
+
+
+
+                {% if session.description %}
+
+                    <p class="session-description">
+                        {{ session.description }}
                     </p>
 
-
-                    <p>
-                        <strong>⏱ Duration:</strong>
-                        {{ session.duration_minutes }} minutes
-                    </p>
+                {% endif %}
 
 
-                    <p>
 
-                        <strong>🛠 Technologies:</strong>
+                <!-- Technologies -->
 
-                        {% for technology in session.technologies.all %}
+                <div class="technologies">
+
+                    <span class="technology-label">
+                        🛠 Technologies:
+                    </span>
+
+
+                    {% for technology in session.technologies.all %}
+
+                        <span class="technology-tag">
 
                             {{ technology.name }}
 
-                            {% if not forloop.last %}
-                                ·
-                            {% endif %}
+                        </span>
 
-                        {% empty %}
+                    {% empty %}
 
+                        <span class="no-technologies">
                             No technologies added.
+                        </span>
 
-                        {% endfor %}
+                    {% endfor %}
 
-                    </p>
-
-
-                    <p>
-                        <a href="{% url 'session_detail' session.id %}">
-                            View session →
-                        </a>
-                    </p>
-
-                </article>
+                </div>
 
 
-                <hr>
 
-            {% endfor %}
+                <div class="session-footer">
+
+                    <a
+                        href="{% url 'session_detail' session.id %}"
+                        class="view-link"
+                    >
+                        View session →
+                    </a>
+
+                </div>
+
+
+            </article>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+{% else %}
+
+
+    <!-- =========================
+         Empty State
+    ========================= -->
+
+    <div class="empty-card">
+
+
+        {% if query %}
+
+            <div class="empty-icon">
+                🔎
+            </div>
+
+            <h2>
+                No sessions found
+            </h2>
+
+            <p>
+                Nothing matched
+                <strong>"{{ query }}"</strong>.
+            </p>
+
+
+            <a
+                href="{% url 'session_list' %}"
+                class="primary-button"
+            >
+                ← View all sessions
+            </a>
 
 
         {% else %}
 
-            <!-- No Results -->
+            <div class="empty-icon">
+                💻
+            </div>
 
-            {% if query %}
+            <h2>
+                No coding sessions yet
+            </h2>
 
-                <h3>No sessions found 🔎</h3>
+            <p>
+                Start documenting your coding journey!
+            </p>
 
-                <p>
-                    Nothing matched
-                    <strong>"{{ query }}"</strong>.
-                </p>
 
-                <p>
-                    <a href="{% url 'session_list' %}">
-                        ← View all sessions
-                    </a>
-                </p>
-
-            {% else %}
-
-                <h3>No coding sessions yet.</h3>
-
-                <p>
-                    Start documenting your coding journey!
-                </p>
-
-                <p>
-                    <a href="{% url 'session_create' %}">
-                        + Log your first session
-                    </a>
-                </p>
-
-            {% endif %}
+            <a
+                href="{% url 'session_create' %}"
+                class="primary-button"
+            >
+                + Log your first session
+            </a>
 
         {% endif %}
 
 
-        <!-- Pagination -->
-
-        {% if page_obj.has_other_pages %}
-
-            <hr>
-
-            <nav aria-label="Session pagination">
-
-                {% if page_obj.has_previous %}
-
-                    <a href="?page=1{% if query %}&q={{ query }}{% endif %}">
-                        « First
-                    </a>
-
-                    &nbsp;
-
-                    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">
-                        ← Previous
-                    </a>
-
-                {% endif %}
+    </div>
 
 
-                &nbsp;
+{% endif %}
 
 
-                <strong>
-                    Page {{ page_obj.number }}
-                    of {{ page_obj.paginator.num_pages }}
-                </strong>
+
+<!-- =========================
+     Pagination
+========================= -->
+
+{% if page_obj.has_other_pages %}
 
 
-                &nbsp;
+    <div class="pagination">
 
 
-                {% if page_obj.has_next %}
+        {% if page_obj.has_previous %}
 
-                    <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">
-                        Next →
-                    </a>
+            <a
+                href="?page=1{% if query %}&q={{ query }}{% endif %}"
+            >
+                « First
+            </a>
 
-                    &nbsp;
 
-                    <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}">
-                        Last »
-                    </a>
-
-                {% endif %}
-
-            </nav>
+            <a
+                href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"
+            >
+                ← Previous
+            </a>
 
         {% endif %}
 
-    </main>
 
 
-    <footer>
+        <span class="current-page">
 
-        <hr>
+            Page
+            {{ page_obj.number }}
+            of
+            {{ page_obj.paginator.num_pages }}
 
-        <p>
-            DailyDev 🟩 — Keep coding. Keep building.
-        </p>
+        </span>
 
-    </footer>
 
-</body>
 
-</html>
+        {% if page_obj.has_next %}
+
+            <a
+                href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}"
+            >
+                Next →
+            </a>
+
+
+            <a
+                href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}"
+            >
+                Last »
+            </a>
+
+        {% endif %}
+
+
+    </div>
+
+
+{% endif %}
+
+
+
+<!-- =========================
+     Page-specific CSS
+========================= -->
+
+<style>
+
+    /* Page Header */
+
+    .page-header {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: flex-end;
+
+        gap: 20px;
+
+        margin-bottom: 30px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 6px;
+
+        font-size: 2rem;
+
+        color: #111827;
+    }
+
+    .page-header p {
+        margin: 0;
+
+        color: #6b7280;
+    }
+
+
+    /* Button */
+
+    .primary-button {
+        display: inline-block;
+
+        padding: 11px 18px;
+
+        background: #111827;
+        color: white;
+
+        border-radius: 8px;
+
+        text-decoration: none;
+
+        font-weight: 600;
+
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    .primary-button:hover {
+        opacity: 0.9;
+
+        transform: translateY(-2px);
+    }
+
+
+    /* Search */
+
+    .search-card {
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 14px;
+
+        padding: 22px;
+
+        margin-bottom: 25px;
+    }
+
+    .search-card label {
+        display: block;
+
+        margin-bottom: 8px;
+
+        font-weight: 600;
+
+        color: #111827;
+    }
+
+    .search-row {
+        display: flex;
+
+        gap: 10px;
+    }
+
+    .search-row input {
+        flex: 1;
+
+        padding: 11px 13px;
+
+        border: 1px solid #d1d5db;
+
+        border-radius: 8px;
+
+        font-size: 0.95rem;
+
+        outline: none;
+    }
+
+    .search-row input:focus {
+        border-color: #111827;
+    }
+
+    .search-row button {
+        padding:
+            10px 18px;
+    }
+
+    .search-info {
+        margin-top: 15px;
+
+        padding-top: 15px;
+
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .search-info p {
+        margin: 0 0 5px;
+
+        color: #6b7280;
+    }
+
+    .search-info a {
+        color: #111827;
+
+        font-weight: 600;
+
+        text-decoration: none;
+    }
+
+
+    /* Session Cards */
+
+    .sessions-list {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 18px;
+    }
+
+    .session-card {
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 14px;
+
+        padding: 24px;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .session-card:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 10px 25px
+            rgba(0, 0, 0, 0.07);
+    }
+
+
+    /* Card Header */
+
+    .session-card-header {
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+    .session-card h2 {
+        margin: 0 0 5px;
+
+        font-size: 1.25rem;
+    }
+
+    .session-card h2 a {
+        color: #111827;
+
+        text-decoration: none;
+    }
+
+    .session-card h2 a:hover {
+        text-decoration: underline;
+    }
+
+    .session-date {
+        margin: 0;
+
+        color: #6b7280;
+
+        font-size: 0.9rem;
+    }
+
+    .duration {
+        white-space: nowrap;
+
+        padding: 7px 11px;
+
+        background: #f3f4f6;
+
+        border-radius: 7px;
+
+        color: #374151;
+
+        font-size: 0.9rem;
+
+        font-weight: 600;
+    }
+
+
+    /* Description */
+
+    .session-description {
+        margin: 18px 0;
+
+        color: #4b5563;
+    }
+
+
+    /* Technologies */
+
+    .technologies {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        align-items: center;
+
+        gap: 7px;
+
+        margin-top: 18px;
+    }
+
+    .technology-label {
+        color: #6b7280;
+
+        font-size: 0.9rem;
+
+        margin-right: 3px;
+    }
+
+    .technology-tag {
+        padding: 5px 9px;
+
+        background: #f3f4f6;
+
+        border-radius: 6px;
+
+        color: #374151;
+
+        font-size: 0.85rem;
+
+        font-weight: 500;
+    }
+
+    .no-technologies {
+        color: #9ca3af;
+
+        font-size: 0.9rem;
+    }
+
+
+    /* Card Footer */
+
+    .session-footer {
+        margin-top: 20px;
+
+        padding-top: 16px;
+
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .view-link {
+        color: #111827;
+
+        font-weight: 600;
+
+        text-decoration: none;
+    }
+
+    .view-link:hover {
+        text-decoration: underline;
+    }
+
+
+    /* Empty State */
+
+    .empty-card {
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 14px;
+
+        padding: 55px 25px;
+
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 2.5rem;
+
+        margin-bottom: 10px;
+    }
+
+    .empty-card h2 {
+        margin: 0 0 8px;
+
+        color: #111827;
+    }
+
+    .empty-card p {
+        margin: 0 0 22px;
+
+        color: #6b7280;
+    }
+
+
+    /* Pagination */
+
+    .pagination {
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+
+        margin-top: 30px;
+    }
+
+    .pagination a {
+        padding: 8px 12px;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 7px;
+
+        background: white;
+
+        color: #374151;
+
+        text-decoration: none;
+
+        font-weight: 500;
+    }
+
+    .pagination a:hover {
+        background: #f3f4f6;
+    }
+
+    .current-page {
+        padding: 8px 12px;
+
+        color: #6b7280;
+
+        font-size: 0.9rem;
+    }
+
+
+    /* Mobile */
+
+    @media (max-width: 700px) {
+
+        .page-header {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .search-row {
+            flex-direction: column;
+        }
+
+        .search-row button {
+            width: 100%;
+        }
+
+        .session-card-header {
+            flex-direction: column;
+        }
+
+        .duration {
+            align-self: flex-start;
+        }
+
+    }
+
+</style>
+
+
+{% endblock %}

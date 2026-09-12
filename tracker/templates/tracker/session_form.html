@@ -1,27 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>New Coding Session | DailyDev</title>
-</head>
+{% block title %}DailyDev | New Coding Session{% endblock %}
 
-<body>
+{% block content %}
 
-    <header>
-        <h1>DailyDev 🟩</h1>
+<style>
+    .form-page {
+        max-width: 760px;
+        margin: 0 auto;
+    }
 
-        <p>Create a new coding session.</p>
+    .form-header {
+        margin-bottom: 28px;
+    }
 
-        <a href="{% url 'session_list' %}">
-            ← Back to sessions
-        </a>
-    </header>
+    .form-header h1 {
+        margin-bottom: 8px;
+    }
 
-    <main>
+    .form-header p {
+        color: #666;
+        margin: 0;
+    }
 
-        <h2>Log Today's Work</h2>
+    .form-card {
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .form-card p {
+        margin-bottom: 20px;
+    }
+
+    .form-card label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-card input,
+    .form-card textarea,
+    .form-card select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 15px;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-card textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-card input:focus,
+    .form-card textarea:focus,
+    .form-card select:focus {
+        outline: none;
+        border-color: #222;
+    }
+
+    .helptext {
+        display: block;
+        margin-top: 6px;
+        color: #777;
+        font-size: 13px;
+    }
+
+    .errorlist {
+        color: #c0392b;
+        margin: 6px 0;
+        padding-left: 20px;
+        font-size: 14px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 28px;
+    }
+
+    .save-button {
+        background: #111;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .save-button:hover {
+        opacity: 0.85;
+    }
+
+    .cancel-button {
+        color: #555;
+        text-decoration: none;
+        padding: 12px 16px;
+    }
+
+    .cancel-button:hover {
+        color: #111;
+    }
+
+    @media (max-width: 600px) {
+        .form-card {
+            padding: 22px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .save-button,
+        .cancel-button {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="form-page">
+
+    <div class="form-header">
+        <h1>New Coding Session</h1>
+        <p>Log what you worked on today and keep your coding streak alive.</p>
+    </div>
+
+    <div class="form-card">
 
         <form method="POST">
 
@@ -29,13 +142,20 @@
 
             {{ form.as_p }}
 
-            <button type="submit">
-                Save Coding Session
-            </button>
+            <div class="form-actions">
+                <button type="submit" class="save-button">
+                    Save Coding Session
+                </button>
+
+                <a href="{% url 'session_list' %}" class="cancel-button">
+                    Cancel
+                </a>
+            </div>
 
         </form>
 
-    </main>
+    </div>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

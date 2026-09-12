@@ -1,122 +1,288 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
+{% block title %}DailyDev | {{ session.title }}{% endblock %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block content %}
 
-    <title>{{ session.title }} | DailyDev</title>
-</head>
+<style>
+    .detail-page {
+        max-width: 850px;
+        margin: 0 auto;
+    }
 
-<body>
+    .back-link {
+        display: inline-block;
+        margin-bottom: 24px;
+        color: #555;
+        text-decoration: none;
+        font-size: 14px;
+    }
 
-    <header>
+    .back-link:hover {
+        color: #111;
+    }
 
-        <h1>DailyDev 🟩</h1>
+    .session-card {
+        background: white;
+        padding: 36px;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
 
-        <p>
-            <a href="{% url 'session_list' %}">
-                ← Back to all sessions
-            </a>
-        </p>
+    .session-header {
+        margin-bottom: 28px;
+    }
 
-    </header>
+    .session-header h1 {
+        margin: 0 0 10px;
+        font-size: 32px;
+    }
 
+    .session-description {
+        color: #555;
+        font-size: 16px;
+        line-height: 1.7;
+        margin: 0;
+        white-space: pre-line;
+    }
 
-    <main>
+    .divider {
+        border: none;
+        border-top: 1px solid #eee;
+        margin: 28px 0;
+    }
 
-        <article>
+    .session-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
 
-            <!-- Session Title -->
+    .info-item {
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 12px;
+    }
 
-            <h2>{{ session.title }}</h2>
+    .info-label {
+        display: block;
+        color: #777;
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
 
+    .info-value {
+        font-weight: 600;
+        color: #222;
+    }
 
-            <!-- Description -->
+    .technology-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+    }
 
-            <p>
+    .technology-tag {
+        display: inline-block;
+        background: #f0f0f0;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 13px;
+    }
+
+    .github-commit {
+        margin-top: 18px;
+    }
+
+    .commit-code {
+        display: inline-block;
+        background: #f4f4f4;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 13px;
+        word-break: break-all;
+    }
+
+    .actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .action-button {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .edit-button {
+        background: #111;
+        color: white;
+    }
+
+    .edit-button:hover {
+        opacity: 0.85;
+    }
+
+    .delete-button {
+        background: #f5f5f5;
+        color: #b42318;
+    }
+
+    .delete-button:hover {
+        background: #eee;
+    }
+
+    .empty-text {
+        color: #777;
+        font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+        .session-card {
+            padding: 24px;
+        }
+
+        .session-header h1 {
+            font-size: 26px;
+        }
+
+        .session-info {
+            grid-template-columns: 1fr;
+        }
+
+        .actions {
+            flex-direction: column;
+        }
+
+        .action-button {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="detail-page">
+
+    <a href="{% url 'session_list' %}" class="back-link">
+        ← Back to all sessions
+    </a>
+
+    <article class="session-card">
+
+        <div class="session-header">
+
+            <h1>{{ session.title }}</h1>
+
+            <p class="session-description">
                 {{ session.description }}
             </p>
 
-            <hr>
+        </div>
 
+        <hr class="divider">
 
-            <!-- Session Information -->
+        <div class="session-info">
 
-            <p>
-                <strong>Date:</strong>
-                {{ session.date }}
-            </p>
+            <div class="info-item">
+                <span class="info-label">Date</span>
+                <span class="info-value">
+                    {{ session.date }}
+                </span>
+            </div>
 
+            <div class="info-item">
+                <span class="info-label">Duration</span>
+                <span class="info-value">
+                    {{ session.duration_minutes }} minutes
+                </span>
+            </div>
 
-            <p>
-                <strong>Duration:</strong>
-                {{ session.duration_minutes }} minutes
-            </p>
+            <div class="info-item">
+                <span class="info-label">Developer</span>
+                <span class="info-value">
+                    {{ session.user.username }}
+                </span>
+            </div>
 
+            <div class="info-item">
 
-            <p>
-                <strong>Developer:</strong>
-                {{ session.user.username }}
-            </p>
+                <span class="info-label">Technologies</span>
 
+                {% if session.technologies.all %}
 
-            <p>
-                <strong>Technologies:</strong>
+                    <div class="technology-list">
 
-                {% for technology in session.technologies.all %}
+                        {% for technology in session.technologies.all %}
 
-                    {{ technology.name }}
+                            <span class="technology-tag">
+                                {{ technology.name }}
+                            </span>
 
-                    {% if not forloop.last %}
-                        ·
-                    {% endif %}
+                        {% empty %}
 
-                {% empty %}
+                            <span class="empty-text">
+                                No technologies added
+                            </span>
 
-                    No technologies added
+                        {% endfor %}
 
-                {% endfor %}
+                    </div>
 
-            </p>
+                {% else %}
 
+                    <span class="empty-text">
+                        No technologies added
+                    </span>
 
-            <!-- GitHub Commit -->
+                {% endif %}
 
-            {% if session.github_commit %}
+            </div>
 
-                <p>
-                    <strong>GitHub Commit:</strong>
+        </div>
+
+        {% if session.github_commit %}
+
+            <div class="github-commit">
+
+                <span class="info-label">
+                    GitHub Commit
+                </span>
+
+                <span class="commit-code">
                     {{ session.github_commit }}
-                </p>
+                </span>
 
-            {% endif %}
+            </div>
 
+        {% endif %}
 
-            <hr>
+        <hr class="divider">
 
+        <div class="actions">
 
-            <!-- Actions -->
+            <a
+                href="{% url 'session_edit' session.id %}"
+                class="action-button edit-button"
+            >
+                ✏️ Edit Session
+            </a>
 
-            <p>
-                <a href="{% url 'session_edit' session.id %}">
-                    ✏️ Edit this session
-                </a>
-            </p>
+            <a
+                href="{% url 'session_delete' session.id %}"
+                class="action-button delete-button"
+            >
+                🗑️ Delete Session
+            </a>
 
+        </div>
 
-            <p>
-                <a href="{% url 'session_delete' session.id %}">
-                    🗑️ Delete this session
-                </a>
-            </p>
+    </article>
 
+</div>
 
-        </article>
-
-    </main>
-
-</body>
-
-</html>
+{% endblock %}

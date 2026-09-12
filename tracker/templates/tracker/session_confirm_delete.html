@@ -1,67 +1,172 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
+{% block title %}DailyDev | Delete {{ session.title }}{% endblock %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+{% block content %}
 
-    <title>Delete {{ session.title }} | DailyDev</title>
-</head>
+<style>
+    .delete-page {
+        max-width: 650px;
+        margin: 0 auto;
+    }
 
-<body>
+    .back-link {
+        display: inline-block;
+        margin-bottom: 24px;
+        color: #555;
+        text-decoration: none;
+        font-size: 14px;
+    }
 
-    <header>
+    .back-link:hover {
+        color: #111;
+    }
 
-        <h1>DailyDev 🟩</h1>
+    .delete-card {
+        background: white;
+        padding: 36px;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        text-align: center;
+    }
 
-        <a href="{% url 'session_detail' session.id %}">
-            ← Cancel and go back
-        </a>
+    .delete-card h1 {
+        margin: 0 0 16px;
+        font-size: 30px;
+    }
 
-    </header>
+    .delete-description {
+        color: #555;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
 
+    .session-title {
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 12px;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 18px;
+    }
 
-    <main>
+    .warning {
+        color: #b42318;
+        font-size: 14px;
+        margin-bottom: 28px;
+    }
 
-        <h2>Delete Coding Session</h2>
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
 
-        <p>
-            Are you sure you want to delete:
-        </p>
+    .action-button {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+    }
 
-        <h3>
-            "{{ session.title }}"
-        </h3>
+    .cancel-button {
+        background: #f5f5f5;
+        color: #222;
+    }
 
-        <p>
-            This action cannot be undone.
-        </p>
+    .cancel-button:hover {
+        background: #eee;
+    }
 
+    .delete-button {
+        background: #b42318;
+        color: white;
+    }
 
-        <form method="POST">
+    .delete-button:hover {
+        opacity: 0.85;
+    }
 
-            {% csrf_token %}
+    @media (max-width: 600px) {
+        .delete-card {
+            padding: 24px;
+        }
 
-            <button type="submit">
+        .delete-card h1 {
+            font-size: 26px;
+        }
+
+        .actions {
+            flex-direction: column;
+        }
+
+        .action-button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<div class="delete-page">
+
+```
+<a
+    href="{% url 'session_detail' session.id %}"
+    class="back-link"
+>
+    ← Cancel and go back
+</a>
+
+<article class="delete-card">
+
+    <h1>
+        Delete Coding Session
+    </h1>
+
+    <p class="delete-description">
+        Are you sure you want to delete:
+    </p>
+
+    <div class="session-title">
+        "{{ session.title }}"
+    </div>
+
+    <p class="warning">
+        This action cannot be undone.
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="actions">
+
+            <a
+                href="{% url 'session_detail' session.id %}"
+                class="action-button cancel-button"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="action-button delete-button"
+            >
                 🗑️ Yes, Delete Session
             </button>
 
-        </form>
+        </div>
 
+    </form>
 
-        <br>
+</article>
+```
 
+</div>
 
-        <a href="{% url 'session_detail' session.id %}">
-            Cancel
-        </a>
-
-    </main>
-
-</body>
-
-</html>
+{% endblock %}
