@@ -98,21 +98,22 @@ def session_edit(request, session_id):
     )
 
     if request.method == "POST":
-        session.title = request.POST.get("title")
-        session.description = request.POST.get("description")
-        session.duration_minutes = request.POST.get("duration_minutes")
+        form = CodingSessionForm(request.POST, instance=session)
 
-        session.save()
+        if form.is_valid():
+            form.save()
+            return redirect("session_detail", session_id=session.id)
 
-        return redirect(
-            "session_detail",
-            session_id=session.id,
-        )
+    else:
+        form = CodingSessionForm(instance=session)
 
     return render(
         request,
         "tracker/session_edit.html",
-        {"session": session},
+        {
+            "form": form,
+            "session": session,
+        },
     )
 
 

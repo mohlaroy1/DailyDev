@@ -1,188 +1,130 @@
 {% extends "base.html" %}
 
-{% block title %}DailyDev | Edit {{ session.title }}{% endblock %}
+{% block title %}Edit {{ session.title }} | DailyDev{% endblock %}
 
 {% block content %}
 
 <style>
-    .form-page {
+    .edit-page {
         max-width: 760px;
         margin: 0 auto;
     }
 
-    .form-header {
-        margin-bottom: 28px;
+    .edit-header {
+        margin-bottom: 24px;
     }
 
-    .back-link {
-        display: inline-block;
-        margin-bottom: 18px;
-        color: #555;
-        text-decoration: none;
-        font-size: 14px;
-    }
-
-    .back-link:hover {
-        color: #111;
-    }
-
-    .form-header h1 {
+    .edit-header h1 {
         margin-bottom: 8px;
     }
 
-    .form-header p {
+    .edit-header p {
         color: #666;
         margin: 0;
     }
 
-    .form-card {
+    .edit-card {
         background: white;
-        padding: 32px;
+        padding: 30px;
         border-radius: 16px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
     }
 
-    .form-group {
-        margin-bottom: 22px;
+    .edit-card form p {
+        margin-bottom: 20px;
     }
 
-    .form-group label {
+    .edit-card label {
         display: block;
-        font-weight: 600;
         margin-bottom: 8px;
+        font-weight: 600;
     }
 
-    .form-group input,
-    .form-group textarea {
+    .edit-card input,
+    .edit-card textarea,
+    .edit-card select {
         width: 100%;
         padding: 12px 14px;
         border: 1px solid #ddd;
         border-radius: 10px;
         font-size: 15px;
-        font-family: inherit;
         box-sizing: border-box;
     }
 
-    .form-group textarea {
-        min-height: 140px;
+    .edit-card textarea {
         resize: vertical;
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus {
+    .edit-card input:focus,
+    .edit-card textarea:focus,
+    .edit-card select:focus {
         outline: none;
-        border-color: #222;
+        border-color: #333;
+    }
+
+    .helptext {
+        display: block;
+        margin-top: 6px;
+        color: #777;
+        font-size: 13px;
+    }
+
+    .errorlist {
+        color: #c0392b;
+        margin: 6px 0;
+        padding-left: 20px;
     }
 
     .form-actions {
         display: flex;
         gap: 12px;
-        align-items: center;
-        margin-top: 28px;
+        margin-top: 24px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 12px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
     }
 
     .save-button {
+        border: none;
         background: #111;
         color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
+    }
+
+    .cancel-button {
+        background: #f2f2f2;
+        color: #333;
     }
 
     .save-button:hover {
         opacity: 0.85;
     }
 
-    .cancel-button {
-        color: #555;
-        text-decoration: none;
-        padding: 12px 16px;
-    }
-
     .cancel-button:hover {
-        color: #111;
-    }
-
-    @media (max-width: 600px) {
-        .form-card {
-            padding: 22px;
-        }
-
-        .form-actions {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .save-button,
-        .cancel-button {
-            text-align: center;
-        }
+        background: #e5e5e5;
     }
 </style>
 
-<div class="form-page">
+<div class="edit-page">
 
-    <a href="{% url 'session_detail' session.id %}" class="back-link">
-        ← Back to session
-    </a>
-
-    <div class="form-header">
+    <div class="edit-header">
         <h1>Edit Coding Session</h1>
-        <p>Update the details of your coding session.</p>
+        <p>Update your coding session details.</p>
     </div>
 
-    <div class="form-card">
+    <div class="edit-card">
 
         <form method="POST">
-
             {% csrf_token %}
 
-            <div class="form-group">
-                <label for="title">
-                    Title
-                </label>
-
-                <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value="{{ session.title }}"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="description">
-                    Description
-                </label>
-
-                <textarea
-                    id="description"
-                    name="description"
-                    required
-                >{{ session.description }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="duration_minutes">
-                    Duration (minutes)
-                </label>
-
-                <input
-                    type="number"
-                    id="duration_minutes"
-                    name="duration_minutes"
-                    value="{{ session.duration_minutes }}"
-                    min="1"
-                    required
-                >
-            </div>
+            {{ form.as_p }}
 
             <div class="form-actions">
-
                 <button type="submit" class="save-button">
                     Save Changes
                 </button>
@@ -193,9 +135,7 @@
                 >
                     Cancel
                 </a>
-
             </div>
-
         </form>
 
     </div>
