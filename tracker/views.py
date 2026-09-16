@@ -55,11 +55,8 @@ def session_create(request):
 
         if form.is_valid():
             session = form.save(commit=False)
-
             session.user = request.user
-
             session.save()
-
             form.save_m2m()
 
             return redirect("session_list")
@@ -98,14 +95,22 @@ def session_edit(request, session_id):
     )
 
     if request.method == "POST":
-        form = CodingSessionForm(request.POST, instance=session)
+        form = CodingSessionForm(
+            request.POST,
+            instance=session
+        )
 
         if form.is_valid():
             form.save()
-            return redirect("session_detail", session_id=session.id)
+            return redirect(
+                "session_detail",
+                session_id=session.id
+            )
 
     else:
-        form = CodingSessionForm(instance=session)
+        form = CodingSessionForm(
+            instance=session
+        )
 
     return render(
         request,
