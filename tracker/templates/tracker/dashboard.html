@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load duration_filters %}
 
 {% block title %}
     DailyDev | Dashboard
@@ -437,10 +438,7 @@
         </p>
 
         <p class="stat-value">
-            {{ total_minutes }}
-            <span style="font-size: 1rem;">
-                min
-            </span>
+            {{ total_duration|duration_format }}
         </p>
 
     </div>
@@ -512,8 +510,7 @@
             </span>
 
             <strong>
-                {{ minutes_this_week }}
-                min
+                {{ week_duration|duration_format }}
             </strong>
 
         </div>
@@ -574,7 +571,7 @@
                             <td>
                                 <strong>
                                     {{ day.date }}
-                                </strong>
+                                 </strong>
                             </td>
 
                             <td>
@@ -582,7 +579,7 @@
                             </td>
 
                             <td>
-                                {{ day.minutes }} min
+                                {{ day.duration|duration_format }}
                             </td>
 
                         </tr>
@@ -697,8 +694,7 @@
 
                 <p>
                     ⏱
-                    {{ latest_session.duration_minutes }}
-                    minutes
+                    {{ latest_session.duration_minutes|duration_format }}
                 </p>
 
 
