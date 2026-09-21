@@ -2,15 +2,16 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def duration_format(value):
     if not value:
         return "0m"
 
-    total_seconds = int(value.total_seconds())
+    total_minutes = int(value)
 
-    hours = total_seconds // 3600
-    minutes = (total_seconds % 3600) // 60
+    hours = total_minutes // 60
+    minutes = total_minutes % 60
 
     if hours > 0 and minutes > 0:
         return f"{hours}h {minutes}m"

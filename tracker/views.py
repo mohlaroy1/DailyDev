@@ -98,14 +98,15 @@ def session_edit(request, session_id):
     if request.method == "POST":
         form = CodingSessionForm(
             request.POST,
-            instance=session
+            instance=session,
         )
 
         if form.is_valid():
             form.save()
+
             return redirect(
                 "session_detail",
-                session_id=session.id
+                session_id=session.id,
             )
 
     else:
