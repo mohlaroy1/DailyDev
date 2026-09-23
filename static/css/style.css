@@ -141,6 +141,63 @@ button:hover,
 
 
 /* =========================
+   GitHub
+========================= */
+
+.github-commit {
+    margin-top: 18px;
+
+    background: #f8f8f8;
+
+    padding: 16px;
+
+    border-radius: 12px;
+}
+
+.github-commit-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.commit-code {
+    display: inline-block;
+
+    background: #f4f4f4;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    font-family: monospace;
+    font-size: 13px;
+
+    word-break: break-all;
+}
+
+.github-button {
+    display: inline-block;
+
+    padding: 8px 12px;
+
+    background: #111;
+    color: white;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.github-button:hover {
+    opacity: 0.8;
+}
+
+
+/* =========================
    Footer
 ========================= */
 
@@ -179,4 +236,13 @@ button:hover,
         padding-top: 25px;
     }
 
+    .github-commit-content {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .github-button {
+        width: 100%;
+        text-align: center;
+    }
 }

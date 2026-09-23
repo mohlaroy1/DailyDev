@@ -80,10 +80,21 @@ def session_detail(request, session_id):
         user=request.user,
     )
 
+    github_url = None
+
+    if session.github_commit:
+        github_url = (
+            f"https://github.com/mohlaroy1/DailyDev/commit/"
+            f"{session.github_commit}"
+        )
+
     return render(
         request,
         "tracker/session_detail.html",
-        {"session": session},
+        {
+            "session": session,
+            "github_url": github_url,
+        },
     )
 
 
@@ -151,24 +162,19 @@ def dashboard(request):
 
     total_duration = (
         user_sessions.aggregate(total=Sum("duration_minutes"))["total"]
-        or timedelta()
+        or 0
     )
 
     total_technologies = (
-        user_sessions
-        .values("technologies")
-        .distinct()
-        .count()
+        user_sessions.values("technologies").distinct().count()
     )
 
-    latest_session = (
-        user_sessions
-        .order_by("-date", "-created_at")
-        .first()
-    )
+    latest_session = user_sessions.order_by(
+        "-date",
+        "-created_at"
+    ).first()
 
     today = timezone.localdate()
-
 
     week_start = today - timedelta(days=today.weekday())
 
@@ -181,17 +187,19 @@ def dashboard(request):
 
     week_duration = (
         week_sessions.aggregate(total=Sum("duration_minutes"))["total"]
-        or timedelta()
+        or 0
     )
 
     most_used_technology = (
         user_sessions
         .values("technologies__name")
         .annotate(session_count=Count("id"))
-        .order_by("-session_count", "technologies__name")
+        .order_by(
+            "-session_count",
+            "technologies__name",
+        )
         .first()
     )
-
 
     session_dates = set(
         user_sessions.values_list("date", flat=True)
@@ -207,17 +215,19 @@ def dashboard(request):
         streak += 1
         current_day -= timedelta(days=1)
 
-
     daily_activity = []
 
     for i in range(6, -1, -1):
+
         day = today - timedelta(days=i)
 
         day_sessions = user_sessions.filter(date=day)
 
         day_duration = (
-            day_sessions.aggregate(total=Sum("duration_minutes"))["total"]
-            or timedelta()
+            day_sessions.aggregate(
+                total=Sum("duration_minutes")
+            )["total"]
+            or 0
         )
 
         daily_activity.append({
@@ -231,14 +241,10 @@ def dashboard(request):
         "total_duration": total_duration,
         "total_technologies": total_technologies,
         "latest_session": latest_session,
-
         "sessions_this_week": sessions_this_week,
         "week_duration": week_duration,
-
         "most_used_technology": most_used_technology,
-
         "streak": streak,
-
         "daily_activity": daily_activity,
     }
 
