@@ -91,8 +91,23 @@
         font-size: 13px;
     }
 
+
+    /* =========================
+       GitHub
+    ========================= */
+
     .github-commit {
         margin-top: 18px;
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .github-commit-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
     .commit-code {
@@ -104,6 +119,26 @@
         font-size: 13px;
         word-break: break-all;
     }
+
+    .github-button {
+        display: inline-block;
+        padding: 8px 12px;
+        background: #111;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .github-button:hover {
+        opacity: 0.8;
+    }
+
+
+    /* =========================
+       Actions
+    ========================= */
 
     .actions {
         display: flex;
@@ -143,7 +178,13 @@
         font-size: 14px;
     }
 
+
+    /* =========================
+       Responsive
+    ========================= */
+
     @media (max-width: 600px) {
+
         .session-card {
             padding: 24px;
         }
@@ -163,14 +204,25 @@
         .action-button {
             text-align: center;
         }
+
+        .github-commit-content {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .github-button {
+            text-align: center;
+        }
     }
 </style>
+
 
 <div class="detail-page">
 
     <a href="{% url 'session_list' %}" class="back-link">
         ← Back to all sessions
     </a>
+
 
     <article class="session-card">
 
@@ -184,66 +236,79 @@
 
         </div>
 
+
         <hr class="divider">
+
 
         <div class="session-info">
 
             <div class="info-item">
-                <span class="info-label">Date</span>
+
+                <span class="info-label">
+                    Date
+                </span>
+
                 <span class="info-value">
                     {{ session.date }}
                 </span>
+
             </div>
 
+
             <div class="info-item">
-                <span class="info-label">Duration</span>
+
+                <span class="info-label">
+                    Duration
+                </span>
+
                 <span class="info-value">
                     {{ session.duration_minutes }} minutes
                 </span>
+
             </div>
 
+
             <div class="info-item">
-                <span class="info-label">Developer</span>
+
+                <span class="info-label">
+                    Developer
+                </span>
+
                 <span class="info-value">
                     {{ session.user.username }}
                 </span>
+
             </div>
+
 
             <div class="info-item">
 
-                <span class="info-label">Technologies</span>
+                <span class="info-label">
+                    Technologies
+                </span>
 
-                {% if session.technologies.all %}
+                <div class="technology-list">
 
-                    <div class="technology-list">
+                    {% for technology in session.technologies.all %}
 
-                        {% for technology in session.technologies.all %}
+                        <span class="technology-tag">
+                            {{ technology.name }}
+                        </span>
 
-                            <span class="technology-tag">
-                                {{ technology.name }}
-                            </span>
+                    {% empty %}
 
-                        {% empty %}
+                        <span class="empty-text">
+                            No technologies added
+                        </span>
 
-                            <span class="empty-text">
-                                No technologies added
-                            </span>
+                    {% endfor %}
 
-                        {% endfor %}
-
-                    </div>
-
-                {% else %}
-
-                    <span class="empty-text">
-                        No technologies added
-                    </span>
-
-                {% endif %}
+                </div>
 
             </div>
 
         </div>
+
 
         {% if session.github_commit %}
 
@@ -253,15 +318,34 @@
                     GitHub Commit
                 </span>
 
-                <span class="commit-code">
-                    {{ session.github_commit }}
-                </span>
+                <div class="github-commit-content">
+
+                    <span class="commit-code">
+                        {{ session.github_commit }}
+                    </span>
+
+                    {% if github_url %}
+
+                        <a
+                            href="{{ github_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="github-button"
+                        >
+                            View on GitHub ↗
+                        </a>
+
+                    {% endif %}
+
+                </div>
 
             </div>
 
         {% endif %}
 
+
         <hr class="divider">
+
 
         <div class="actions">
 
