@@ -14,16 +14,14 @@ from .models import CodingSession, Technology
 
 @login_required
 def session_list(request):
-
-    query = request.GET.get("q", "")
-
     sessions = (
         CodingSession.objects
-        .select_related("user")
-        .prefetch_related("technologies")
         .filter(user=request.user)
-        .order_by("-date", "-created_at")
+        .prefetch_related("technologies")
     )
+
+    # Search
+    query = request.GET.get("q", "").strip()
 
     if query:
         sessions = sessions.filter(
@@ -32,20 +30,102 @@ def session_list(request):
             | Q(technologies__name__icontains=query)
         ).distinct()
 
-    paginator = Paginator(sessions, 5)
+    # Technology filter
+    technology_id = request.GET.get("technology", "").strip()
+
+    if technology_id:
+        sessions = sessions.filter(
+            technologies__id=technology_id
+        )
+
+    # Date filters
+    date_from = request.GET.get("date_from", "").strip()
+    date_to = request.GET.get("date_to", "").strip()
+
+    if date_from:
+        sessions = sessions.filter(date__gte=date_from)
+
+    if date_to:
+        sessions = sessions.filter(date__lte=date_to)
+
+    # Minimum duration
+    min_duration = request.GET.get(
+        "min_duration",
+        "",
+    ).strip()
+
+    if min_duration:
+        try:
+            min_duration_value = int(min_duration)
+
+            if min_duration_value >= 0:
+                sessions = sessions.filter(
+                    duration_minutes__gte=min_duration_value
+                )
+
+        except ValueError:
+            pass
+
+    # Sorting
+    sort = request.GET.get("sort", "newest")
+
+    if sort == "oldest":
+        sessions = sessions.order_by(
+            "date",
+            "created_at",
+        )
+
+    elif sort == "longest":
+        sessions = sessions.order_by(
+            "-duration_minutes",
+            "-date",
+        )
+
+    elif sort == "shortest":
+        sessions = sessions.order_by(
+            "duration_minutes",
+            "-date",
+        )
+
+    else:
+        sessions = sessions.order_by(
+            "-date",
+            "-created_at",
+        )
+
+    # Pagination
+    paginator = Paginator(
+        sessions,
+        5,
+    )
 
     page_number = request.GET.get("page")
 
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginator.get_page(
+        page_number
+    )
+
+    technologies = Technology.objects.order_by(
+        "category",
+        "name",
+    )
+
+    context = {
+        "page_obj": page_obj,
+        "technologies": technologies,
+
+        "query": query,
+        "selected_technology": technology_id,
+        "date_from": date_from,
+        "date_to": date_to,
+        "min_duration": min_duration,
+        "selected_sort": sort,
+    }
 
     return render(
         request,
         "tracker/session_list.html",
-        {
-            "sessions": page_obj,
-            "page_obj": page_obj,
-            "query": query,
-        },
+        context,
     )
 
 

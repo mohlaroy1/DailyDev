@@ -40,54 +40,184 @@
 
 
 <!-- =========================
-     Search
+     Filters
 ========================= -->
 
-<section class="search-card">
+<section class="filters-card">
 
-    <form method="get">
+    <form method="get" class="filters-form">
 
-        <label for="search">
-            Search your sessions
-        </label>
+        <div class="filter-group">
 
-
-        <div class="search-row">
+            <label for="search">
+                Search
+            </label>
 
             <input
                 id="search"
                 type="text"
                 name="q"
-                placeholder="Search by title, description, or technology..."
+                placeholder="Search sessions..."
                 value="{{ query }}"
             >
 
-            <button type="submit">
-                🔍 Search
-            </button>
+        </div>
+
+
+        <div class="filter-group">
+
+            <label for="technology">
+                Technology
+            </label>
+
+            <select
+                id="technology"
+                name="technology"
+            >
+
+                <option value="">
+                    All technologies
+                </option>
+
+                {% for technology in technologies %}
+
+                    <option
+                        value="{{ technology.id }}"
+                        {% if selected_technology == technology.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ technology.name }}
+                        {% if technology.category %}
+                            — {{ technology.category }}
+                        {% endif %}
+                    </option>
+
+                {% endfor %}
+
+            </select>
 
         </div>
 
-    </form>
+
+        <div class="filter-group">
+
+            <label for="date_from">
+                From
+            </label>
+
+            <input
+                type="date"
+                id="date_from"
+                name="date_from"
+                value="{{ date_from }}"
+            >
+
+        </div>
 
 
-    {% if query %}
+        <div class="filter-group">
 
-        <div class="search-info">
+            <label for="date_to">
+                To
+            </label>
 
-            <p>
-                Showing results for:
-                <strong>"{{ query }}"</strong>
-            </p>
+            <input
+                type="date"
+                id="date_to"
+                name="date_to"
+                value="{{ date_to }}"
+            >
+
+        </div>
 
 
-            <a href="{% url 'session_list' %}">
-                ✕ Clear search
+        <div class="filter-group">
+
+            <label for="min_duration">
+                Minimum duration
+            </label>
+
+            <input
+                type="number"
+                id="min_duration"
+                name="min_duration"
+                min="0"
+                value="{{ min_duration }}"
+                placeholder="e.g. 60"
+            >
+
+        </div>
+
+
+        <div class="filter-group">
+
+            <label for="sort">
+                Sort by
+            </label>
+
+            <select
+                id="sort"
+                name="sort"
+            >
+
+                <option
+                    value="newest"
+                    {% if selected_sort == "newest" %}
+                        selected
+                    {% endif %}
+                >
+                    Newest first
+                </option>
+
+                <option
+                    value="oldest"
+                    {% if selected_sort == "oldest" %}
+                        selected
+                    {% endif %}
+                >
+                    Oldest first
+                </option>
+
+                <option
+                    value="longest"
+                    {% if selected_sort == "longest" %}
+                        selected
+                    {% endif %}
+                >
+                    Longest sessions
+                </option>
+
+                <option
+                    value="shortest"
+                    {% if selected_sort == "shortest" %}
+                        selected
+                    {% endif %}
+                >
+                    Shortest sessions
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-actions">
+
+            <button type="submit">
+                Apply Filters
+            </button>
+
+            <a
+                href="{% url 'session_list' %}"
+                class="clear-filters"
+            >
+                Clear
             </a>
 
         </div>
 
-    {% endif %}
+    </form>
 
 </section>
 
@@ -97,13 +227,13 @@
      Sessions
 ========================= -->
 
-{% if sessions %}
+{% if page_obj.object_list %}
 
 
     <div class="sessions-list">
 
 
-        {% for session in sessions %}
+        {% for session in page_obj %}
 
 
             <article class="session-card">
@@ -213,7 +343,7 @@
     <div class="empty-card">
 
 
-        {% if query %}
+        {% if query or selected_technology or date_from or date_to or min_duration or selected_sort != "newest" %}
 
             <div class="empty-icon">
                 🔎
@@ -224,18 +354,15 @@
             </h2>
 
             <p>
-                Nothing matched
-                <strong>"{{ query }}"</strong>.
+                No coding sessions matched your current filters.
             </p>
-
 
             <a
                 href="{% url 'session_list' %}"
                 class="primary-button"
             >
-                ← View all sessions
+                ← Clear all filters
             </a>
-
 
         {% else %}
 
@@ -250,7 +377,6 @@
             <p>
                 Start documenting your coding journey!
             </p>
-
 
             <a
                 href="{% url 'session_create' %}"
@@ -282,14 +408,13 @@
         {% if page_obj.has_previous %}
 
             <a
-                href="?page=1{% if query %}&q={{ query }}{% endif %}"
+                href="?page=1&q={{ query }}&technology={{ selected_technology }}&date_from={{ date_from }}&date_to={{ date_to }}&min_duration={{ min_duration }}&sort={{ selected_sort }}"
             >
                 « First
             </a>
 
-
             <a
-                href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                href="?page={{ page_obj.previous_page_number }}&q={{ query }}&technology={{ selected_technology }}&date_from={{ date_from }}&date_to={{ date_to }}&min_duration={{ min_duration }}&sort={{ selected_sort }}"
             >
                 ← Previous
             </a>
@@ -297,29 +422,24 @@
         {% endif %}
 
 
-
         <span class="current-page">
-
             Page
             {{ page_obj.number }}
             of
             {{ page_obj.paginator.num_pages }}
-
         </span>
-
 
 
         {% if page_obj.has_next %}
 
             <a
-                href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                href="?page={{ page_obj.next_page_number }}&q={{ query }}&technology={{ selected_technology }}&date_from={{ date_from }}&date_to={{ date_to }}&min_duration={{ min_duration }}&sort={{ selected_sort }}"
             >
                 Next →
             </a>
 
-
             <a
-                href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}"
+                href="?page={{ page_obj.paginator.num_pages }}&q={{ query }}&technology={{ selected_technology }}&date_from={{ date_from }}&date_to={{ date_to }}&min_duration={{ min_duration }}&sort={{ selected_sort }}"
             >
                 Last »
             </a>
@@ -393,82 +513,6 @@
         opacity: 0.9;
 
         transform: translateY(-2px);
-    }
-
-
-    /* Search */
-
-    .search-card {
-        background: white;
-
-        border: 1px solid #e5e7eb;
-
-        border-radius: 14px;
-
-        padding: 22px;
-
-        margin-bottom: 25px;
-    }
-
-    .search-card label {
-        display: block;
-
-        margin-bottom: 8px;
-
-        font-weight: 600;
-
-        color: #111827;
-    }
-
-    .search-row {
-        display: flex;
-
-        gap: 10px;
-    }
-
-    .search-row input {
-        flex: 1;
-
-        padding: 11px 13px;
-
-        border: 1px solid #d1d5db;
-
-        border-radius: 8px;
-
-        font-size: 0.95rem;
-
-        outline: none;
-    }
-
-    .search-row input:focus {
-        border-color: #111827;
-    }
-
-    .search-row button {
-        padding:
-            10px 18px;
-    }
-
-    .search-info {
-        margin-top: 15px;
-
-        padding-top: 15px;
-
-        border-top: 1px solid #e5e7eb;
-    }
-
-    .search-info p {
-        margin: 0 0 5px;
-
-        color: #6b7280;
-    }
-
-    .search-info a {
-        color: #111827;
-
-        font-weight: 600;
-
-        text-decoration: none;
     }
 
 
@@ -711,7 +755,109 @@
     }
 
 
+    /* Session Filters */
+
+    .filters-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 25px;
+    }
+
+    .filters-form {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .filter-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4b5563;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: white;
+        font: inherit;
+        color: #1f2937;
+        box-sizing: border-box;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+        outline: none;
+        border-color: #111827;
+    }
+
+    .filter-actions {
+        display: flex;
+        align-items: end;
+        gap: 10px;
+    }
+
+    .filter-actions button {
+        height: 42px;
+    }
+
+    .clear-filters {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 42px;
+        padding: 0 14px;
+        border-radius: 8px;
+        background: #f3f4f6;
+        color: #374151;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .clear-filters:hover {
+        background: #e5e7eb;
+    }
+
+
     /* Mobile */
+
+    @media (max-width: 800px) {
+
+        .filters-form {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 550px) {
+
+        .filters-form {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .filter-actions button,
+        .clear-filters {
+            width: 100%;
+        }
+
+    }
+
 
     @media (max-width: 700px) {
 
