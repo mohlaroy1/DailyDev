@@ -10,6 +10,8 @@ urlpatterns = [
 
     path("dashboard/", views.dashboard, name="dashboard"),
 
+    path("analytics/", views.analytics, name="analytics"),
+
     path("sessions/new/", views.session_create, name="session_create"),
 
     path(

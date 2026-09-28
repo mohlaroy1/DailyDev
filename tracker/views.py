@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Sum, Q
+from django.db.models import Avg, Count, Sum, Max, Q
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from datetime import timedelta
@@ -332,4 +332,65 @@ def dashboard(request):
         request,
         "tracker/dashboard.html",
         context,
+    )
+
+
+@login_required
+def analytics(request):
+    sessions = CodingSession.objects.filter(
+        user=request.user
+    )
+
+    total_sessions = sessions.count()
+
+    total_minutes = (
+        sessions.aggregate(
+            total=Sum("duration_minutes")
+        )["total"]
+        or 0
+    )
+
+    average_duration = (
+        sessions.aggregate(
+            average=Avg("duration_minutes")
+        )["average"]
+        or 0
+    )
+
+    longest_session = (
+        sessions.aggregate(
+            longest=Max("duration_minutes")
+        )["longest"]
+        or 0
+    )
+
+    technology_usage = (
+        sessions
+        .values("technologies__name")
+        .annotate(
+            session_count=Count("id")
+        )
+        .order_by("-session_count")
+    )
+
+    daily_activity = (
+        sessions
+        .values("date")
+        .annotate(
+            total_minutes=Sum("duration_minutes")
+        )
+        .order_by("date")
+    )
+
+    return render(
+        request,
+        "tracker/analytics.html",
+        {
+            "total_sessions": total_sessions,
+            "total_minutes": total_minutes,
+            "average_duration": round(average_duration),
+            "longest_session": longest_session,
+            "technology_usage": technology_usage,
+            "daily_activity": daily_activity,
+        },
     )

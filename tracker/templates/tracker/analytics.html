@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}
+    DailyDev | Analytics
+{% endblock %}
+
+{% block content %}
+
+<div class="analytics-header">
+
+    <div>
+        <h1>Analytics</h1>
+        <p>Understand how you spend your coding time.</p>
+    </div>
+
+    <a
+        href="{% url 'session_list' %}"
+        class="secondary-button"
+    >
+        ← Sessions
+    </a>
+
+</div>
+
+
+<!-- =========================
+     Overview
+========================= -->
+
+<section class="stats-grid">
+
+    <div class="stat-card">
+        <span class="stat-label">
+            Total Sessions
+        </span>
+
+        <strong class="stat-value">
+            {{ total_sessions }}
+        </strong>
+    </div>
+
+
+    <div class="stat-card">
+        <span class="stat-label">
+            Total Coding Time
+        </span>
+
+        <strong class="stat-value">
+            {{ total_minutes }}m
+        </strong>
+    </div>
+
+
+    <div class="stat-card">
+        <span class="stat-label">
+            Average Session
+        </span>
+
+        <strong class="stat-value">
+            {{ average_duration }}m
+        </strong>
+    </div>
+
+
+    <div class="stat-card">
+        <span class="stat-label">
+            Longest Session
+        </span>
+
+        <strong class="stat-value">
+            {{ longest_session }}m
+        </strong>
+    </div>
+
+</section>
+
+
+<!-- =========================
+     Technology Usage
+========================= -->
+
+<section class="analytics-card">
+
+    <div class="section-heading">
+        <h2>Technology Usage</h2>
+        <p>Which technologies appear most often in your sessions.</p>
+    </div>
+
+
+    {% if technology_usage %}
+
+        <div class="technology-analytics">
+
+            {% for item in technology_usage %}
+
+                <div class="technology-row">
+
+                    <span class="technology-name">
+                        {{ item.technologies__name|default:"Uncategorized" }}
+                    </span>
+
+                    <span class="technology-count">
+                        {{ item.session_count }} session{{ item.session_count|pluralize }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p class="analytics-empty">
+            No technology data yet.
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- =========================
+     Daily Activity
+========================= -->
+
+<section class="analytics-card">
+
+    <div class="section-heading">
+        <h2>Daily Coding Activity</h2>
+        <p>Your total coding time for each day.</p>
+    </div>
+
+
+    {% if daily_activity %}
+
+        <div class="activity-list">
+
+            {% for day in daily_activity %}
+
+                <div class="activity-row">
+
+                    <span class="activity-date">
+                        {{ day.date }}
+                    </span>
+
+                    <div class="activity-bar-container">
+
+                        <div
+                            class="activity-bar"
+                            style="width: {{ day.total_minutes }}%;"
+                        ></div>
+
+                    </div>
+
+                    <span class="activity-time">
+                        {{ day.total_minutes }}m
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p class="analytics-empty">
+            No coding activity yet.
+        </p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
