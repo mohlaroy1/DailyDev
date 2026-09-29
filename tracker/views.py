@@ -364,16 +364,24 @@ def analytics(request):
         or 0
     )
 
-    technology_usage = (
+    # -------------------------
+    # Technology usage
+    # -------------------------
+
+    technology_usage = list(
         sessions
         .values("technologies__name")
         .annotate(
             session_count=Count("id")
         )
-        .order_by("-session_count")
+        .order_by("-session_count", "technologies__name")
     )
 
-    daily_activity = (
+    # -------------------------
+    # Daily activity
+    # -------------------------
+
+    daily_activity = list(
         sessions
         .values("date")
         .annotate(
@@ -381,6 +389,21 @@ def analytics(request):
         )
         .order_by("date")
     )
+
+    # Find the largest daily value.
+    max_daily_minutes = max(
+        [item["total_minutes"] for item in daily_activity],
+        default=0,
+    )
+
+    # Add a percentage for the chart.
+    for item in daily_activity:
+        if max_daily_minutes:
+            item["percentage"] = round(
+                (item["total_minutes"] / max_daily_minutes) * 100
+            )
+        else:
+            item["percentage"] = 0
 
     return render(
         request,
@@ -392,5 +415,6 @@ def analytics(request):
             "longest_session": longest_session,
             "technology_usage": technology_usage,
             "daily_activity": daily_activity,
+            "max_daily_minutes": max_daily_minutes,
         },
     )

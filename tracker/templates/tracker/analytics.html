@@ -10,7 +10,10 @@
 
     <div>
         <h1>Analytics</h1>
-        <p>Understand how you spend your coding time.</p>
+
+        <p>
+            Understand how you spend your coding time.
+        </p>
     </div>
 
     <a
@@ -30,6 +33,7 @@
 <section class="stats-grid">
 
     <div class="stat-card">
+
         <span class="stat-label">
             Total Sessions
         </span>
@@ -37,10 +41,12 @@
         <strong class="stat-value">
             {{ total_sessions }}
         </strong>
+
     </div>
 
 
     <div class="stat-card">
+
         <span class="stat-label">
             Total Coding Time
         </span>
@@ -48,10 +54,12 @@
         <strong class="stat-value">
             {{ total_minutes }}m
         </strong>
+
     </div>
 
 
     <div class="stat-card">
+
         <span class="stat-label">
             Average Session
         </span>
@@ -59,10 +67,12 @@
         <strong class="stat-value">
             {{ average_duration }}m
         </strong>
+
     </div>
 
 
     <div class="stat-card">
+
         <span class="stat-label">
             Longest Session
         </span>
@@ -70,9 +80,11 @@
         <strong class="stat-value">
             {{ longest_session }}m
         </strong>
+
     </div>
 
 </section>
+
 
 
 <!-- =========================
@@ -82,26 +94,48 @@
 <section class="analytics-card">
 
     <div class="section-heading">
-        <h2>Technology Usage</h2>
-        <p>Which technologies appear most often in your sessions.</p>
+
+        <h2>
+            Technology Usage
+        </h2>
+
+        <p>
+            Technologies you've used across your coding sessions.
+        </p>
+
     </div>
 
 
     {% if technology_usage %}
 
-        <div class="technology-analytics">
+        <div class="technology-chart">
 
             {% for item in technology_usage %}
 
-                <div class="technology-row">
+                <div class="chart-row">
 
-                    <span class="technology-name">
-                        {{ item.technologies__name|default:"Uncategorized" }}
-                    </span>
+                    <div class="chart-row-header">
 
-                    <span class="technology-count">
-                        {{ item.session_count }} session{{ item.session_count|pluralize }}
-                    </span>
+                        <span class="chart-label">
+                            {{ item.technologies__name|default:"Uncategorized" }}
+                        </span>
+
+                        <span class="chart-value">
+                            {{ item.session_count }}
+                            session{{ item.session_count|pluralize }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart-track">
+
+                        <div
+                            class="chart-fill"
+                            data-value="{{ item.session_count }}"
+                        ></div>
+
+                    </div>
 
                 </div>
 
@@ -120,42 +154,52 @@
 </section>
 
 
+
 <!-- =========================
-     Daily Activity
+     Daily Coding Activity
 ========================= -->
 
 <section class="analytics-card">
 
     <div class="section-heading">
-        <h2>Daily Coding Activity</h2>
-        <p>Your total coding time for each day.</p>
+
+        <h2>
+            Daily Coding Activity
+        </h2>
+
+        <p>
+            Your coding time by day.
+        </p>
+
     </div>
 
 
     {% if daily_activity %}
 
-        <div class="activity-list">
+        <div class="activity-chart">
 
             {% for day in daily_activity %}
 
-                <div class="activity-row">
+                <div class="activity-chart-row">
 
-                    <span class="activity-date">
+                    <div class="activity-date">
                         {{ day.date }}
-                    </span>
+                    </div>
 
-                    <div class="activity-bar-container">
+
+                    <div class="activity-track">
 
                         <div
-                            class="activity-bar"
-                            style="width: {{ day.total_minutes }}%;"
+                            class="activity-fill"
+                            style="width: {{ day.percentage }}%;"
                         ></div>
 
                     </div>
 
-                    <span class="activity-time">
+
+                    <div class="activity-value">
                         {{ day.total_minutes }}m
-                    </span>
+                    </div>
 
                 </div>
 
@@ -172,5 +216,120 @@
     {% endif %}
 
 </section>
+
+
+
+<!-- =========================
+     Analytics Summary
+========================= -->
+
+<section class="analytics-card">
+
+    <div class="section-heading">
+
+        <h2>
+            Your Progress
+        </h2>
+
+        <p>
+            A quick summary of your current coding activity.
+        </p>
+
+    </div>
+
+
+    {% if total_sessions %}
+
+        <div class="progress-summary">
+
+            <div class="summary-item">
+
+                <span>
+                    Sessions completed
+                </span>
+
+                <strong>
+                    {{ total_sessions }}
+                </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span>
+                    Minutes invested
+                </span>
+
+                <strong>
+                    {{ total_minutes }}
+                </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span>
+                    Average session
+                </span>
+
+                <strong>
+                    {{ average_duration }} min
+                </strong>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span>
+                    Longest session
+                </span>
+
+                <strong>
+                    {{ longest_session }} min
+                </strong>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <p class="analytics-empty">
+            Start logging coding sessions to see your progress.
+        </p>
+
+    {% endif %}
+
+</section>
+
+<script>
+
+    const chartBars = document.querySelectorAll(".chart-fill");
+
+    let largestValue = 0;
+
+    chartBars.forEach((bar) => {
+        const value = Number(bar.dataset.value);
+
+        if (value > largestValue) {
+            largestValue = value;
+        }
+    });
+
+    chartBars.forEach((bar) => {
+        const value = Number(bar.dataset.value);
+
+        if (largestValue > 0) {
+            const percentage =
+                (value / largestValue) * 100;
+
+            bar.style.width = `${percentage}%`;
+        }
+    });
+
+</script>
 
 {% endblock %}
