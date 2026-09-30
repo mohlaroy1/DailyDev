@@ -3,10 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg, Count, Sum, Max, Q
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from datetime import timedelta
-from django.db.models import Count
+from datetime import timedelta, date
 from django.utils import timezone
-from datetime import timedelta
 
 from .forms import CodingSessionForm
 from .models import CodingSession, Technology
@@ -374,7 +372,10 @@ def analytics(request):
         .annotate(
             session_count=Count("id")
         )
-        .order_by("-session_count", "technologies__name")
+        .order_by(
+            "-session_count",
+            "technologies__name",
+        )
     )
 
     # -------------------------
@@ -390,20 +391,93 @@ def analytics(request):
         .order_by("date")
     )
 
-    # Find the largest daily value.
     max_daily_minutes = max(
-        [item["total_minutes"] for item in daily_activity],
+        [
+            item["total_minutes"]
+            for item in daily_activity
+        ],
         default=0,
     )
 
-    # Add a percentage for the chart.
     for item in daily_activity:
+
         if max_daily_minutes:
             item["percentage"] = round(
-                (item["total_minutes"] / max_daily_minutes) * 100
+                (
+                    item["total_minutes"]
+                    / max_daily_minutes
+                )
+                * 100
             )
+
         else:
             item["percentage"] = 0
+
+    # -------------------------
+    # Coding heatmap
+    # -------------------------
+
+    heatmap_data = {}
+
+    for item in daily_activity:
+        heatmap_data[item["date"]] = item["total_minutes"]
+
+    today = sessions.aggregate(
+        latest=Max("date")
+    )["latest"]
+
+    if today is None:
+        today = date.today()
+
+    heatmap_start = today - timedelta(days=364)
+
+    heatmap = []
+
+    current_date = heatmap_start
+
+    while current_date <= today:
+
+        minutes = heatmap_data.get(
+            current_date,
+            0,
+        )
+
+        heatmap.append(
+            {
+                "date": current_date,
+                "minutes": minutes,
+            }
+        )
+
+        current_date += timedelta(days=1)
+
+    heatmap_max = max(
+        [
+            day["minutes"]
+            for day in heatmap
+        ],
+        default=0,
+    )
+
+    for day in heatmap:
+
+        if day["minutes"] == 0:
+            day["level"] = 0
+
+        elif heatmap_max == 0:
+            day["level"] = 0
+
+        elif day["minutes"] <= heatmap_max * 0.25:
+            day["level"] = 1
+
+        elif day["minutes"] <= heatmap_max * 0.50:
+            day["level"] = 2
+
+        elif day["minutes"] <= heatmap_max * 0.75:
+            day["level"] = 3
+
+        else:
+            day["level"] = 4
 
     return render(
         request,
@@ -411,10 +485,13 @@ def analytics(request):
         {
             "total_sessions": total_sessions,
             "total_minutes": total_minutes,
-            "average_duration": round(average_duration),
+            "average_duration": round(
+                average_duration
+            ),
             "longest_session": longest_session,
             "technology_usage": technology_usage,
             "daily_activity": daily_activity,
             "max_daily_minutes": max_daily_minutes,
+            "heatmap": heatmap,
         },
     )

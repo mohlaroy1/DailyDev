@@ -33,7 +33,6 @@
 <section class="stats-grid">
 
     <div class="stat-card">
-
         <span class="stat-label">
             Total Sessions
         </span>
@@ -41,12 +40,9 @@
         <strong class="stat-value">
             {{ total_sessions }}
         </strong>
-
     </div>
 
-
     <div class="stat-card">
-
         <span class="stat-label">
             Total Coding Time
         </span>
@@ -54,12 +50,9 @@
         <strong class="stat-value">
             {{ total_minutes }}m
         </strong>
-
     </div>
 
-
     <div class="stat-card">
-
         <span class="stat-label">
             Average Session
         </span>
@@ -67,12 +60,9 @@
         <strong class="stat-value">
             {{ average_duration }}m
         </strong>
-
     </div>
 
-
     <div class="stat-card">
-
         <span class="stat-label">
             Longest Session
         </span>
@@ -80,11 +70,9 @@
         <strong class="stat-value">
             {{ longest_session }}m
         </strong>
-
     </div>
 
 </section>
-
 
 
 <!-- =========================
@@ -104,7 +92,6 @@
         </p>
 
     </div>
-
 
     {% if technology_usage %}
 
@@ -126,7 +113,6 @@
                         </span>
 
                     </div>
-
 
                     <div class="chart-track">
 
@@ -154,7 +140,6 @@
 </section>
 
 
-
 <!-- =========================
      Daily Coding Activity
 ========================= -->
@@ -173,7 +158,6 @@
 
     </div>
 
-
     {% if daily_activity %}
 
         <div class="activity-chart">
@@ -186,7 +170,6 @@
                         {{ day.date }}
                     </div>
 
-
                     <div class="activity-track">
 
                         <div
@@ -195,7 +178,6 @@
                         ></div>
 
                     </div>
-
 
                     <div class="activity-value">
                         {{ day.total_minutes }}m
@@ -218,6 +200,75 @@
 </section>
 
 
+<!-- =========================
+     Coding Activity Heatmap
+========================= -->
+
+<section class="analytics-card">
+
+    <div class="section-heading">
+
+        <h2>
+            Coding Activity
+        </h2>
+
+        <p>
+            Your coding activity over the last year.
+        </p>
+
+    </div>
+
+    <div class="heatmap-wrapper">
+
+        <div class="heatmap-months">
+
+            <span>Jan</span>
+            <span>Feb</span>
+            <span>Mar</span>
+            <span>Apr</span>
+            <span>May</span>
+            <span>Jun</span>
+            <span>Jul</span>
+            <span>Aug</span>
+            <span>Sep</span>
+            <span>Oct</span>
+            <span>Nov</span>
+            <span>Dec</span>
+
+        </div>
+
+        <div class="heatmap">
+
+            {% for day in heatmap %}
+
+                <div
+                    class="heatmap-cell level-{{ day.level }}"
+                    title="{{ day.date }} — {{ day.minutes }} minutes"
+                    data-weekday="{{ day.date|date:'w' }}"
+                ></div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="heatmap-legend">
+
+            <span>Less</span>
+
+            <span class="legend-cell level-0"></span>
+            <span class="legend-cell level-1"></span>
+            <span class="legend-cell level-2"></span>
+            <span class="legend-cell level-3"></span>
+            <span class="legend-cell level-4"></span>
+
+            <span>More</span>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 <!-- =========================
      Analytics Summary
@@ -237,7 +288,6 @@
 
     </div>
 
-
     {% if total_sessions %}
 
         <div class="progress-summary">
@@ -254,7 +304,6 @@
 
             </div>
 
-
             <div class="summary-item">
 
                 <span>
@@ -267,7 +316,6 @@
 
             </div>
 
-
             <div class="summary-item">
 
                 <span>
@@ -279,7 +327,6 @@
                 </strong>
 
             </div>
-
 
             <div class="summary-item">
 
